@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Actividades-DB-No-SQL.iml" filepath="$PROJECT_DIR$/.idea/Actividades-DB-No-SQL.iml" />
       <module fileurl="file://$PROJECT_DIR$/Flores Hernandez Cristian Emmanuel/Flores Hernandez Cristian Emmanuel.iml" filepath="$PROJECT_DIR$/Flores Hernandez Cristian Emmanuel/Flores Hernandez Cristian Emmanuel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Flores Hernandez Cristian Emmanuel/actividades/actividades.iml" filepath="$PROJECT_DIR$/Flores Hernandez Cristian Emmanuel/actividades/actividades.iml" />
     </modules>
   </component>
 </project>
