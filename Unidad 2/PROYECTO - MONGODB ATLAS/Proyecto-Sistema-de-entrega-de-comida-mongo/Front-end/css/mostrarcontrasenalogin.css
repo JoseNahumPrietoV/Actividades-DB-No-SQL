@@ -1,0 +1,29 @@
+/* El contenedor que envuelve el input y el botón */
+.password-wrapper {
+    position: relative; /* Clave para posicionar el botón dentro */
+    display: flex;
+    align-items: center;
+}
+
+/* El campo de texto (input) */
+.password-wrapper input {
+    width: 100%;
+    padding-right: 45px; /* Deja espacio para el botón a la derecha */
+    box-sizing: border-box;
+}
+
+/* El ícono del ojo (botón) */
+.password-wrapper .btn {
+    position: absolute; /* Posiciona el botón sobre el input */
+    right: 10px;        /* Lo coloca a 10px del borde derecho */
+    top: 50%;
+    transform: translateY(-50%); /* Lo centra verticalmente a la perfección */
+    
+    /* Estilos para que no parezca un botón normal */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-size: 16px;
+    padding: 0;
+}

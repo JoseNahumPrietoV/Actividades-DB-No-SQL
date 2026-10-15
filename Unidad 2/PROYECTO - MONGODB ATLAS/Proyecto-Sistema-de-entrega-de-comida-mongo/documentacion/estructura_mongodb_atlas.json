@@ -1,0 +1,189 @@
+{
+  "base_de_datos": "sistemawebsnackver",
+  "motor": "MongoDB Atlas NoSQL (Cluster M0 / TLS 1.3)",
+  "version_esquema": "2.2.0",
+  "descripcion": "Estructura de la base de datos en estado de producción: define las 8 colecciones del sistema con sus índices simples y compuestos de alto rendimiento, y contiene exclusivamente el usuario Administrador base. Todos los demás datos (clientes, vendedores, platillos, pedidos, carritos, reseñas, notificaciones e historial de auditoría) se registran dinámicamente con la interacción de los usuarios en la plataforma.",
+  "colecciones": {
+    "usuarios": {
+      "descripcion": "Gestiona los usuarios de la plataforma (clientes, vendedores y administradores).",
+      "estructura_campos": {
+        "_id": "ObjectId (Identificador único autogenerado)",
+        "nombre": "String (Nombre del usuario)",
+        "apellido": "String (Apellidos)",
+        "email": "String (Único - Clave de inicio de sesión)",
+        "password_hash": "String (Contraseña cifrada con algoritmo bcrypt)",
+        "telefono": "String (Teléfono de contacto de 10 dígitos)",
+        "rol": "String (Enum: 'admin' | 'cliente' | 'vendedor')",
+        "estado": "String (Enum: 'activo' | 'inactivo' | 'pendiente_verificacion')",
+        "verificacion_otp": "Object (Opcional - { codigo, expira, creado } para autenticación 2FA)",
+        "tienda": "Object (Opcional - exclusivo rol vendedor: { nombre_negocio, descripcion, direccion, foto_negocio })",
+        "fecharegistro": "ISODate (Fecha de creación de la cuenta)"
+      },
+      "indices": [
+        { "campos": { "email": 1 }, "opciones": { "unique": true, "name": "uniq_email" } },
+        { "campos": { "rol": 1 }, "opciones": { "name": "idx_rol" } },
+        { "campos": { "rol": 1, "estado": 1 }, "opciones": { "name": "idx_usuarios_rol_estado" } }
+      ],
+      "registros_iniciales": [
+        {
+          "_id": { "$oid": "670000000000000000000001" },
+          "nombre": "Administrador",
+          "apellido": "Supremo",
+          "email": "root@root.com",
+          "password_hash": "$2y$10$abcdefghijklmnopqrstuvwxyz0123456789...",
+          "telefono": "2290000000",
+          "rol": "admin",
+          "estado": "activo",
+          "fecharegistro": { "$date": "2026-10-04T12:00:00Z" }
+        }
+      ]
+    },
+    "categorias": {
+      "descripcion": "Categorías en las que se clasifican los alimentos del catálogo.",
+      "estructura_campos": {
+        "_id": "ObjectId (Identificador único)",
+        "nombrecategoria": "String (Nombre de la categoría)",
+        "descripcion": "String (Descripción general)",
+        "estado": "String (Enum: 'activo' | 'inactivo')",
+        "fecha_creacion": "ISODate"
+      },
+      "indices": [
+        { "campos": { "nombrecategoria": 1 }, "opciones": { "name": "idx_nombrecategoria" } },
+        { "campos": { "estado": 1, "nombrecategoria": 1 }, "opciones": { "name": "idx_cat_estado_nombre" } }
+      ],
+      "registros_iniciales": []
+    },
+    "productos": {
+      "descripcion": "Catálogo de platillos, snacks y bebidas que los vendedores dan de alta.",
+      "estructura_campos": {
+        "_id": "ObjectId (Identificador único)",
+        "id_vendedor": "ObjectId / String (Referencia al usuario vendedor creador)",
+        "id_categoria": "ObjectId / String (Referencia a la categoría correspondiente)",
+        "nombreproducto": "String (Nombre del platillo o alimento)",
+        "descripcion": "String (Detalles e ingredientes)",
+        "precio": "Double (Precio unitario en MXN)",
+        "stock_disponible": "Int (Cantidad disponible para venta)",
+        "disponible": "Int (Compatibilidad con stock)",
+        "imagen": "String (URL segura HTTPS alojada en Cloudinary)",
+        "activo": "Boolean (true: publicado en catálogo, false: pausado)",
+        "fechacreacion": "ISODate"
+      },
+      "indices": [
+        { "campos": { "id_vendedor": 1 }, "opciones": { "name": "idx_vendedor" } },
+        { "campos": { "id_categoria": 1 }, "opciones": { "name": "idx_categoria" } },
+        { "campos": { "activo": 1 }, "opciones": { "name": "idx_activo" } },
+        { "campos": { "id_vendedor": 1, "stock_disponible": 1 }, "opciones": { "name": "idx_prod_vendedor_stock" } },
+        { "campos": { "id_categoria": 1, "stock_disponible": 1 }, "opciones": { "name": "idx_prod_cat_stock" } },
+        { "campos": { "estado": 1 }, "opciones": { "name": "idx_prod_estado" } },
+        { "campos": { "estado": 1, "id_vendedor": 1 }, "opciones": { "name": "idx_prod_estado_vendedor" } }
+      ],
+      "registros_iniciales": []
+    },
+    "pedidos": {
+      "descripcion": "Órdenes de compra generadas por los clientes con detalle embebido de productos (sin JOINs).",
+      "estructura_campos": {
+        "_id": "ObjectId (Identificador único)",
+        "id_pedido_num": "Int (Número de pedido incremental/timestamp)",
+        "id_cliente": "ObjectId / String (Referencia al cliente)",
+        "id_vendedor": "ObjectId / String (Referencia al vendedor)",
+        "items": "Array of Objects ([ { id_producto, nombreproducto, cantidad, precio_unitario, importe } ])",
+        "total": "Double (Monto total a pagar en MXN)",
+        "estadopedido": "String (Enum: 'Pendiente' | 'En preparación' | 'Listo' | 'Entregado' | 'Rechazado' | 'Cancelado')",
+        "metodopago": "String (Enum: 'Efectivo' | 'Transferencia SPEI' | 'Tarjeta')",
+        "referenciapago": "String (Detalles o comprobante de pago)",
+        "notificado_cliente": "Int (0: pendiente, 1: notificado)",
+        "notificado_vendedor": "Int (0: pendiente, 1: notificado)",
+        "fechapedido": "ISODate",
+        "fechaentrega": "ISODate (Opcional)"
+      },
+      "indices": [
+        { "campos": { "id_cliente": 1 }, "opciones": { "name": "idx_pedidos_cliente" } },
+        { "campos": { "id_vendedor": 1 }, "opciones": { "name": "idx_pedidos_vendedor" } },
+        { "campos": { "fechapedido": -1 }, "opciones": { "name": "idx_pedidos_fecha" } },
+        { "campos": { "id_cliente": 1, "notificado_cliente": 1 }, "opciones": { "name": "idx_pedidos_cli_notif" } },
+        { "campos": { "id_vendedor": 1, "notificado_vendedor": 1 }, "opciones": { "name": "idx_pedidos_ven_notif" } },
+        { "campos": { "id_cliente": 1, "fechapedido": -1 }, "opciones": { "name": "idx_pedidos_cli_fecha" } },
+        { "campos": { "id_vendedor": 1, "estadopedido": 1 }, "opciones": { "name": "idx_pedidos_ven_estado" } },
+        { "campos": { "estado": 1 }, "opciones": { "name": "idx_pedidos_estado" } },
+        { "campos": { "id_vendedor": 1, "fechapedido": -1 }, "opciones": { "name": "idx_pedidos_ven_fecha" } },
+        { "campos": { "id_vendedor": 1, "estadopedido": 1, "fechapedido": -1 }, "opciones": { "name": "idx_pedidos_ven_est_fecha" } },
+        { "campos": { "id_cliente": 1, "estadopedido": 1, "fechapedido": -1 }, "opciones": { "name": "idx_pedidos_cli_est_fecha" } }
+      ],
+      "registros_iniciales": []
+    },
+    "carritos": {
+      "descripcion": "Carritos de compra temporales creados al agregar productos.",
+      "estructura_campos": {
+        "_id": "ObjectId (Identificador único)",
+        "id_cliente": "ObjectId / String (Referencia única al cliente)",
+        "items": "Array of Objects ([ { idproducto, nombreproducto, precio, cantidad, imagen } ])",
+        "subtotal": "Double (Suma de los productos en el carrito)",
+        "ultima_actualizacion": "ISODate"
+      },
+      "indices": [
+        { "campos": { "id_cliente": 1 }, "opciones": { "unique": true, "name": "uniq_carrito_cliente" } },
+        { "campos": { "id_cliente": 1 }, "opciones": { "name": "idx_carritos_cliente" } }
+      ],
+      "registros_iniciales": []
+    },
+    "resenas": {
+      "descripcion": "Calificaciones y opiniones dejadas por los clientes sobre los platillos.",
+      "estructura_campos": {
+        "_id": "ObjectId (Identificador único)",
+        "id_producto": "ObjectId / String (Referencia al producto calificado)",
+        "id_cliente": "ObjectId / String (Referencia al cliente autor)",
+        "calificacion": "Int (Escala del 1 al 5 estrellas)",
+        "comentario": "String (Opinión del cliente)",
+        "fecharesena": "ISODate"
+      },
+      "indices": [
+        { "campos": { "id_producto": 1 }, "opciones": { "name": "idx_resena_producto" } },
+        { "campos": { "id_cliente": 1 }, "opciones": { "name": "idx_resena_cliente" } },
+        { "campos": { "fecharesena": -1 }, "opciones": { "name": "idx_resenas_fecha" } }
+      ],
+      "registros_iniciales": []
+    },
+    "historial_usuarios": {
+      "descripcion": "Registro de auditoría y bitácora cronológica de actividades y eventos de usuarios (inicios de sesión, registros, 2FA, cierres de sesión, eliminaciones).",
+      "estructura_campos": {
+        "_id": "ObjectId (Identificador único autogenerado)",
+        "id_usuario": "ObjectId / String (Identificador del usuario asociado al evento)",
+        "email": "String (Correo electrónico del usuario)",
+        "rol": "String (Rol del usuario: 'admin' | 'cliente' | 'vendedor')",
+        "accion": "String (Descripción del evento o acción realizada)",
+        "ip": "String (Dirección IP de origen del cliente)",
+        "dispositivo": "String (Navegador y sistema operativo / User-Agent)",
+        "detalles": "Object (Información contextual adicional del evento)",
+        "fecha": "ISODate (Fecha y hora exacta del evento en UTC)"
+      },
+      "indices": [
+        { "campos": { "fecha": -1 }, "opciones": { "name": "idx_historial_fecha" } },
+        { "campos": { "id_usuario": 1, "fecha": -1 }, "opciones": { "name": "idx_historial_usuario_fecha" } },
+        { "campos": { "accion": 1, "fecha": -1 }, "opciones": { "name": "idx_historial_accion_fecha" } }
+      ],
+      "registros_iniciales": []
+    },
+    "notificaciones": {
+      "descripcion": "Notificaciones en tiempo real para clientes y vendedores (alertas de pedidos, cambios de estado y lectura masiva).",
+      "estructura_campos": {
+        "_id": "ObjectId (Identificador único autogenerado)",
+        "id_usuario": "ObjectId (Referencia al usuario destinatario en usuarios)",
+        "id_usuario_str": "String (Identificador en formato texto para búsquedas flexibles)",
+        "tipo_usuario": "String (Enum: 'cliente' | 'vendedor')",
+        "id_pedido": "String (Referencia al pedido asociado)",
+        "mensaje": "String (Texto explicativo del evento con icono)",
+        "url_destino": "String (Enlace relativo para navegación directa al hacer clic)",
+        "leida": "Boolean (false: no leída, true: marcada como leída)",
+        "fecha": "ISODate (Fecha y hora exacta de emisión)"
+      },
+      "indices": [
+        { "campos": { "id_usuario": 1 }, "opciones": { "name": "id_usuario_1" } },
+        { "campos": { "fecha": -1 }, "opciones": { "name": "fecha_-1" } },
+        { "campos": { "id_usuario": 1, "tipo_usuario": 1, "fecha": -1 }, "opciones": { "name": "idx_notif_usr_tipo_fecha" } },
+        { "campos": { "id_usuario_str": 1, "tipo_usuario": 1, "fecha": -1 }, "opciones": { "name": "idx_notif_usrstr_tipo_fecha" } },
+        { "campos": { "id_usuario": 1, "tipo_usuario": 1, "leida": 1 }, "opciones": { "name": "idx_notif_usr_leida" } }
+      ],
+      "registros_iniciales": []
+    }
+  }
+}

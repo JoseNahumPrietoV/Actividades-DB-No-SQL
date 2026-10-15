@@ -1,0 +1,373 @@
+/* =================================================================
+   HOJA DE ESTILOS PRINCIPAL PARA SNACKVER
+   Organizado por secciones para mayor claridad.
+   ================================================================= */
+
+/* -----------------------------------------------------------------
+   1. VARIABLES Y ESTILOS GLOBALES
+----------------------------------------------------------------- */
+:root {
+    --primary: #4A6DA7;
+    --secondary: #FF6B6B;
+    --accent: #FFD166;
+    --light: #F8F9FA;
+    --dark: #343A40;
+    --success: #28A745;
+    --uni-blue: #1A4F8B;
+    --uni-red: #D62246;
+    --uni-yellow: #FFC857;
+    --uni-green: #4CB944;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--light);
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+/* -----------------------------------------------------------------
+   2. LAYOUT Y CLASES DE UTILIDAD
+----------------------------------------------------------------- */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* -----------------------------------------------------------------
+   3. HEADER / ENCABEZADO
+----------------------------------------------------------------- */
+header {
+    background: linear-gradient(135deg, var(--uni-blue), var(--primary));
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: padding 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+header.scrolled {
+    padding: 10px 0;
+    background: linear-gradient(135deg, #1A4F8B, #406098);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px;
+    width: auto;
+    margin-right: 10px;
+}
+
+nav .nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--uni-yellow);
+}
+
+.auth-buttons .btn {
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.auth-buttons .btn-outline {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    margin-right: 10px;
+}
+
+.auth-buttons .btn-primary {
+    background: var(--uni-yellow);
+    color: var(--uni-blue);
+    font-weight: 600;
+}
+
+
+/* -----------------------------------------------------------------
+   4. SECCIONES DE CONTENIDO PRINCIPAL
+----------------------------------------------------------------- */
+.featured {
+    padding: 60px 0;
+    background: var(--light);
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--uni-blue);
+    font-size: 2rem;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: var(--uni-yellow);
+    margin: 15px auto;
+    border-radius: 2px;
+}
+
+.content-card {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: justify;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.content-card h3 {
+    color: var(--uni-blue);
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+    border-bottom: 2px solid var(--uni-yellow);
+    padding-bottom: 5px;
+}
+
+
+/* -----------------------------------------------------------------
+   5. COMPONENTES ESPECÍFICOS (FAQ, Formularios)
+----------------------------------------------------------------- */
+
+/* --- Componente FAQ --- */
+.faq-item {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+
+.faq-item h3 {
+    color: var(--uni-blue);
+    margin-bottom: 10px;
+    border-bottom: none; /* Quitamos el borde para los h3 de FAQ */
+    font-size: 1.2rem;
+    padding-bottom: 0;
+}
+
+/* --- Formularios --- */
+.form-vendedor, .form-contact {
+    text-align: left;
+}
+
+.form-vendedor {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-vendedor .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-vendedor label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-vendedor input,
+.form-vendedor textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-contact input,
+.form-contact textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1rem;
+}
+
+/* --- Botones de Formularios --- */
+.btn-submit, .form-contact button {
+    background: var(--uni-yellow);
+    color: var(--uni-blue);
+    font-weight: bold;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit {
+    grid-column: 1 / -1;
+}
+
+.btn-submit:hover, .form-contact button:hover {
+    background-color: #eab64d;
+}
+
+
+/* -----------------------------------------------------------------
+   6. FOOTER / PIE DE PÁGINA
+----------------------------------------------------------------- */
+footer {
+    background: var(--uni-blue);
+    color: white;
+    padding: 60px 0 20px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.footer-column h3 {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: var(--uni-yellow);
+}
+
+.footer-column p {
+    color: #ddd;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #ddd;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--uni-yellow);
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: white;
+    transition: background 0.3s ease;
+}
+
+.social-links a:hover {
+    background: var(--uni-yellow);
+    color: var(--uni-blue);
+}
+
+.copyright {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+
+/* -----------------------------------------------------------------
+   7. ESTILOS RESPONSIVE (MEDIA QUERIES)
+----------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+    }
+
+    .logo {
+        margin-bottom: 15px;
+    }
+    
+    .nav-links {
+        margin: 0 0 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding-left: 0;
+    }
+    
+    .nav-links li {
+        margin: 5px 10px;
+    }
+
+    .form-vendedor {
+        grid-template-columns: 1fr;
+    }
+}

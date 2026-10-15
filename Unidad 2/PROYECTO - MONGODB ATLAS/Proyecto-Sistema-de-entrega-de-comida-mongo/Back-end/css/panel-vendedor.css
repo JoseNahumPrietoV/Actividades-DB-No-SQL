@@ -1,0 +1,400 @@
+/* =================================================================
+           HOJA DE ESTILOS COMPLETA E INTEGRADA
+           ================================================================= */
+
+/* -----------------------------------------------------------------
+           1. VARIABLES Y ESTILOS GLOBALES
+        ----------------------------------------------------------------- */
+:root {
+    --primary: #4A6DA7;
+    --secondary: #FF6B6B;
+    --accent: #FFD166;
+    --light: #F8F9FA;
+    --dark: #343A40;
+    --success: #28A745;
+    --uni-blue: #1A4F8B;
+    --uni-red: #D62246;
+    --uni-yellow: #FFC857;
+    --uni-green: #4CB944;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* -----------------------------------------------------------------
+           2. HEADER / ENCABEZADO
+        ----------------------------------------------------------------- */
+header {
+    background: linear-gradient(135deg, var(--uni-blue), var(--primary));
+    padding: 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: padding 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+header.scrolled {
+    padding: 10px 0;
+    background: linear-gradient(135deg, #1A4F8B, #406098);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px;
+    width: auto;
+    margin-right: 10px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--uni-yellow);
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.columna-acciones {
+    display: flex;
+    /* 1. Activa Flexbox */
+    align-items: center;
+    /* 2. (Opcional) Centra los botones verticalmente */
+    gap: 8px;
+    /* 3. (Opcional) Añade un espacio de 8px entre los botones */
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    margin-right: 10px;
+}
+
+.btn-primary {
+    background: var(--uni-yellow);
+    color: var(--uni-blue);
+    font-weight: 600;
+}
+
+/* -----------------------------------------------------------------
+           3. ESTILOS DEL PANEL DE CLIENTE
+        ----------------------------------------------------------------- */
+.dashboard-main-content {
+    background-color: var(--light);
+    padding: 40px 0;
+}
+
+.welcome-header {
+    margin-bottom: 30px;
+}
+
+.welcome-header h1 {
+    color: var(--uni-blue);
+    font-size: 2.5rem;
+}
+
+.dashboard-grid {
+    /* display: grid; */
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+}
+
+.dashboard-sidebar {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+}
+
+.profile-summary {
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    object-fit: cover;
+    border: 3px solid var(--uni-yellow);
+}
+
+.profile-summary h4 {
+    color: var(--dark);
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.profile-summary p {
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: #555;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-nav a i {
+    width: 30px;
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.sidebar-nav a:hover {
+    background-color: var(--light);
+    color: var(--uni-blue);
+}
+
+.sidebar-nav a.active {
+    background-color: var(--uni-blue);
+    color: white;
+}
+
+.sidebar-nav a.active i {
+    color: var(--uni-yellow);
+}
+
+/* .dashboard-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+} */
+
+.dashboard-card h3 {
+    font-size: 1.5rem;
+    color: var(--dark);
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* -----------------------------------------------------------------
+           4. FORMULARIO DE PERFIL
+        ----------------------------------------------------------------- */
+.profile-picture-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-form-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.picture-actions .btn-upload {
+    background-color: var(--light);
+    color: var(--dark);
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.picture-actions p {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.form-group input:disabled {
+    background-color: #f2f2f2;
+    cursor: not-allowed;
+}
+
+.form-group small {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+.form-section-title {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: var(--uni-blue);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-save-changes {
+    background-color: var(--uni-green);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-save-changes:hover {
+    background-color: #218838;
+}
+
+/* -----------------------------------------------------------------
+           5. ESTILOS RESPONSIVE
+        ----------------------------------------------------------------- */
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-sidebar {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    
+
+    .logo {
+        margin-bottom: 15px;
+    }
+
+    .nav-links {
+        margin: 0 0 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding-left: 0;
+    }
+
+    .nav-links li {
+        margin: 5px 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-picture-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Puntito Rojo Puro Blindado para Campana */
+#notification-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background-color: #e74c3c;
+    border-radius: 50%;
+    border: 2px solid #3498db;
+    display: none;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    color: transparent !important;
+    overflow: hidden !important;
+    text-indent: -9999px !important;
+}

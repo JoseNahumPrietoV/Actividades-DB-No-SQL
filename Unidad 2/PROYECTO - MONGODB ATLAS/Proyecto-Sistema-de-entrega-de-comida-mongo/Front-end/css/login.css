@@ -1,0 +1,334 @@
+/* Estilos generales del cuerpo */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #e9e9e9;
+    /* Un fondo gris claro para la página */
+
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Contenedor principal que envuelve todo */
+
+
+/* --- Sección de la Imagen (Izquierda) --- */
+
+
+/* --- Sección del Formulario (Derecha) --- */
+.login-form-section {
+    width: 50%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    /* Asegura que el padding no aumente el tamaño */
+}
+
+.form-container {
+    width: 100%;
+}
+
+.form-container h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+/* Estilo para los grupos de input (label + campo) */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.input-group input::placeholder {
+    color: #aaa;
+}
+
+/* Estilo para la sección de "Remember me" */
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+}
+
+.remember-me input {
+    margin-right: 8px;
+}
+
+.remember-me label {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Estilo del botón de Login */
+.login-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    background: var(--uni-yellow);
+    color: var(--uni-blue);
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background: var(--uni-yellow);
+}
+
+/* Estilo para los enlaces inferiores */
+.links {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.links a {
+    display: block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #888;
+    font-size: 14px;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* Estilo simple para el mensaje de error */
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+
+
+/* Estilos generales */
+
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+header {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo-image {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.btn-outline {
+    border: 2px solid #ff6347;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #ff6347;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background-color: #ff6347;
+    color: #fff;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 72px);
+    /* Ajusta la altura */
+    padding: 40px 0;
+}
+
+/* Contenedor del Formulario */
+.register-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /*max-width: 450px;*/
+    width: 100%;
+    text-align: center;
+}
+
+.register-container h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.register-container p {
+    margin-bottom: 30px;
+    color: #666;
+}
+
+/* Selector de tipo de usuario */
+.user-type-selector {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+    background-color: #f0f0f0;
+    border-radius: 30px;
+    padding: 5px;
+}
+
+.user-type-selector input[type="radio"] {
+    display: none;
+    /* Oculta el radio button real */
+}
+
+.user-type-selector label {
+    flex: 1;
+    padding: 10px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+/* Estilo para el label cuando el radio button está seleccionado */
+.user-type-selector input[type="radio"]:checked+label {
+
+    background: var(--uni-yellow);
+    color: var(--uni-blue);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Grupos de inputs */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    /* Asegura que el padding no afecte el ancho */
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    color: var(--uni-blue);
+}
+
+/* Botón de Registro */
+.btn-register {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    background: var(--uni-yellow);
+    color: var(--uni-blue);
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-register:hover {
+    background: var(--uni-yellow);
+}
+
+/* Mensaje de error */
+.error-message {
+    color: #d9534f;
+    font-size: 14px;
+    margin-bottom: 15px;
+    min-height: 20px;
+}
+
+/* Enlace de inicio de sesión */
+.login-link {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #ff6347;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+
+
+/* formulario*/
+
+.hidden {
+    display: none;
+}

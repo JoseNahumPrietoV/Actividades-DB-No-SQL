@@ -1,0 +1,18 @@
+# Entorno y credenciales confidenciales
+.env
+Back-end/.env
+*.env
+
+# Dependencias de Composer
+/vendor/
+Back-end/vendor/
+composer.lock
+Back-end/composer.lock
+
+# Archivos de depuración, respaldos y temporales
+*.log
+*.zip
+servidor - codigos de backup.pdf
+.DS_Store
+Thumbs.db
+
