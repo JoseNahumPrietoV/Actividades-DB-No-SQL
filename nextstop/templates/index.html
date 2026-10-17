@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NextStop - Plataforma de Viajes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center p-6">
+
+  <!-- Encabezado superior -->
+  <div class="text-center max-w-xl mb-10">
+    <h1 class="text-4xl font-black text-orange-500 tracking-tight mb-2">NextStop</h1>
+    <p class="text-gray-700 text-base font-medium">Una plataforma inteligente para gestionar y publicar experiencias de viaje.</p>
+    <p class="text-gray-500 text-sm mt-1">Conecta agencias con viajeros de forma fluida.</p>
+  </div>
+
+  <!-- Contenedor de accesos -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl w-full">
+
+    <!-- Tarjeta Proveedor -->
+    <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-lg flex flex-col justify-between">
+      <div>
+        <div class="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white text-lg mb-6 shadow">
+          <i class="fa-solid fa-plane"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Soy Proveedor</h2>
+        <p class="text-gray-500 text-sm mb-6 leading-relaxed">
+          Las agencias de viajes pueden publicar sus mejores vuelos y destinos para llegar a viajeros de todo el mundo.
+        </p>
+        <ul class="space-y-3 text-sm text-gray-600 mb-8">
+          <li class="flex items-center gap-3"><i class="fa-solid fa-plane-departure text-gray-400"></i> Publicar vuelos</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-earth-americas text-gray-400"></i> Gestionar destinos</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-chart-simple text-gray-400"></i> Ver estadísticas</li>
+        </ul>
+      </div>
+      <a href="/login/proveedor" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 px-5 rounded-2xl flex items-center justify-between transition-colors">
+        <span>Acceder como proveedor</span>
+        <i class="fa-solid fa-chevron-right text-xs"></i>
+      </a>
+    </div>
+
+    <!-- Tarjeta Cliente -->
+    <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-lg flex flex-col justify-between">
+      <div>
+        <div class="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center text-white text-lg mb-6 shadow">
+          <i class="fa-solid fa-user-group"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Soy Cliente</h2>
+        <p class="text-gray-500 text-sm mb-6 leading-relaxed">
+          Busca vuelos, compara precios, reserva asientos y gestiona tus boletos de viaje de forma fácil y segura.
+        </p>
+        <ul class="space-y-3 text-sm text-gray-600 mb-8">
+          <li class="flex items-center gap-3"><i class="fa-solid fa-magnifying-glass text-orange-500"></i> Buscador de vuelos</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-couch text-orange-500"></i> Selección de asientos</li>
+          <li class="flex items-center gap-3"><i class="fa-solid fa-ticket text-orange-500"></i> Mis boletos</li>
+        </ul>
+      </div>
+      <a href="/login/cliente" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-5 rounded-2xl flex items-center justify-between transition-colors shadow-sm shadow-orange-200">
+        <span>Acceder como Cliente</span>
+        <i class="fa-solid fa-chevron-right text-xs"></i>
+      </a>
+    </div>
+
+  </div>
+
+</body>
+</html>
