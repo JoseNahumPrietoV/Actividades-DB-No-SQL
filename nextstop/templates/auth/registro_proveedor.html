@@ -3,32 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro Agencia - NextStop</title>
+  <title>Registro de Agencia - NextStop</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#F8FAFC] min-h-screen flex items-center justify-center p-6 font-sans">
+<body class="bg-[#F8FAFC] min-h-screen flex items-center justify-center p-6 font-sans text-slate-800">
 
-  <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-xl border border-gray-100">
-    <!-- Logo -->
-    <div class="flex items-center justify-center gap-3 mb-4">
-      <div class="w-10 h-10 bg-slate-900 rounded-2xl flex items-center justify-center text-white text-lg shadow">
+  <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-sm border border-blue-200">
+    <div class="flex items-center justify-center gap-2.5 mb-4">
+      <div class="w-9 h-9 bg-[#243572] rounded-xl flex items-center justify-center text-white text-sm shadow">
         <i class="fa-solid fa-building"></i>
       </div>
-      <h2 class="text-2xl font-black text-slate-800">Next<span class="text-orange-500">Stop</span></h2>
+      <h2 class="text-xl font-black text-slate-900">Next<span class="text-[#243572]">Stop</span></h2>
     </div>
 
     <div class="text-center mb-6">
-      <h1 class="text-xl font-black text-slate-800 uppercase tracking-tight">Registro de Agencia / Proveedor</h1>
-      <p class="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-wider">Publica y administra tus vuelos en la plataforma</p>
+      <h1 class="text-lg font-bold text-slate-900 uppercase tracking-tight">Registro de Agencia</h1>
+      <p class="text-xs text-gray-400 mt-0.5">Afiliación de Proveedor de Vuelos</p>
     </div>
 
-    <!-- Mensajes Flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="space-y-2 mb-4">
           {% for category, message in messages %}
-            <div class="px-4 py-2.5 rounded-xl text-xs font-bold {% if category == 'error' %}bg-red-50 text-red-600 border border-red-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+            <div class="px-4 py-2.5 rounded-xl text-xs font-semibold {% if category == 'error' %}bg-red-50 text-red-600 border border-red-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
               {{ message }}
             </div>
           {% endfor %}
@@ -41,13 +39,13 @@
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre de la Agencia</label>
           <input type="text" name="nombre_agencia" required placeholder="Ej. AeroMéxico"
-            class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-slate-900 focus:outline-none">
+            class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs text-slate-800 focus:ring-2 focus:ring-[#243572] focus:outline-none">
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Administrador Responsable</label>
           <input type="text" name="admin_agencia" required placeholder="Ej. Juan Pérez"
-            class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-slate-900 focus:outline-none">
+            class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs text-slate-800 focus:ring-2 focus:ring-[#243572] focus:outline-none">
         </div>
       </div>
 
@@ -55,28 +53,25 @@
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo Electrónico</label>
           <input type="email" name="correo" required placeholder="contacto@agencia.com"
-            class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-slate-900 focus:outline-none">
+            class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs text-slate-800 focus:ring-2 focus:ring-[#243572] focus:outline-none">
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Sede / País</label>
           <input type="text" name="sede" required placeholder="Ej. México"
-            class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-slate-900 focus:outline-none">
+            class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs text-slate-800 focus:ring-2 focus:ring-[#243572] focus:outline-none">
         </div>
       </div>
 
       <div>
         <div class="flex justify-between items-center mb-1">
           <label class="block text-xs font-bold text-slate-700 uppercase">Teléfono de Contacto</label>
-          <span class="text-[10px] font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded border border-slate-300">Formato: XXX-XXX-XXXX</span>
+          <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">Formato: XXX-XXX-XXXX</span>
         </div>
-        <div class="relative">
-          <i class="fa-solid fa-phone absolute left-4 top-3 text-gray-400 text-xs"></i>
-          <input type="tel" name="telefono" id="input-telefono-prov" required maxlength="12"
-            pattern="^[0-9]{3}-[0-9]{3}-[0-9]{4}$" title="El formato debe ser XXX-XXX-XXXX con 10 dígitos numéricos"
-            placeholder="229-123-4567"
-            class="w-full bg-[#F8FAFC] pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-slate-900 focus:outline-none tracking-wider">
-        </div>
+        <input type="tel" name="telefono" id="input-telefono-prov" required maxlength="12"
+          pattern="^[0-9]{3}-[0-9]{3}-[0-9]{4}$" title="El formato debe ser XXX-XXX-XXXX con 10 dígitos numéricos"
+          placeholder="229-123-4567"
+          class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs text-slate-800 focus:ring-2 focus:ring-[#243572] focus:outline-none tracking-wider">
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -84,9 +79,8 @@
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contraseña</label>
           <div class="relative">
             <input type="password" name="password" id="reg-prov-pass" required placeholder="••••••••"
-              class="w-full bg-[#F8FAFC] pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-slate-900 focus:outline-none">
-            <button type="button" onclick="togglePassword('reg-prov-pass', this)"
-              class="absolute right-3 top-2 text-gray-400 hover:text-slate-700 transition focus:outline-none p-1">
+              class="w-full bg-[#F8FAFC] pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs text-slate-800 focus:ring-2 focus:ring-[#243572] focus:outline-none">
+            <button type="button" onclick="togglePass('reg-prov-pass', this)" class="absolute right-3 top-2 text-gray-400 hover:text-slate-700 p-1">
               <i class="fa-regular fa-eye text-xs"></i>
             </button>
           </div>
@@ -96,72 +90,62 @@
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Confirmar Contraseña</label>
           <div class="relative">
             <input type="password" name="password_confirm" id="reg-prov-confirm" required placeholder="••••••••"
-              class="w-full bg-[#F8FAFC] pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-slate-900 focus:outline-none">
-            <button type="button" onclick="togglePassword('reg-prov-confirm', this)"
-              class="absolute right-3 top-2 text-gray-400 hover:text-slate-700 transition focus:outline-none p-1">
+              class="w-full bg-[#F8FAFC] pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs text-slate-800 focus:ring-2 focus:ring-[#243572] focus:outline-none">
+            <button type="button" onclick="togglePass('reg-prov-confirm', this)" class="absolute right-3 top-2 text-gray-400 hover:text-slate-700 p-1">
               <i class="fa-regular fa-eye text-xs"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Términos y Condiciones -->
       <div class="pt-2">
         <label class="flex items-start gap-2.5 cursor-pointer">
-          <input type="checkbox" name="terminos" required
-            class="mt-0.5 rounded border-gray-300 text-slate-900 focus:ring-slate-900 w-4 h-4">
+          <input type="checkbox" name="terminos" required class="mt-0.5 rounded border-gray-300 text-blue-700 focus:ring-blue-700 w-4 h-4">
           <span class="text-xs text-gray-600 leading-tight">
-            Confirmo que tengo autorización legal para representar a la agencia y acepto los <a href="#" class="text-slate-900 font-bold hover:underline">Términos de Proveedor</a> y la <a href="#" class="text-slate-900 font-bold hover:underline">Política de Privacidad</a> de NextStop.
+            Acepto los <a href="#" class="text-blue-700 font-bold hover:underline">Términos de Proveedor</a> y la <a href="#" class="text-blue-700 font-bold hover:underline">Política de Privacidad</a> de NextStop.
           </span>
         </label>
       </div>
 
       <button type="submit"
-        class="w-full py-3.5 bg-slate-900 hover:bg-black active:scale-95 text-white font-extrabold rounded-xl transition uppercase text-xs tracking-wider shadow-lg">
+        class="w-full py-3 bg-[#243572] hover:bg-[#1a2754] text-white font-bold rounded-xl transition uppercase text-xs tracking-wider shadow-sm">
         Registrar Agencia
       </button>
     </form>
 
     <div class="mt-6 text-center text-xs text-gray-500">
-      ¿Ya registraste tu agencia? <a href="/login/proveedor" class="text-orange-500 font-bold hover:underline">Iniciar Sesión</a>
+      ¿Ya registraste tu agencia? <a href="/login/proveedor" class="text-blue-700 font-bold hover:underline">Iniciar Sesión</a>
     </div>
 
-    <div class="mt-4 text-center">
-      <a href="/" class="text-[11px] font-bold text-gray-400 hover:text-slate-700 transition">
-        &larr; Volver a la página principal
+    <div class="mt-3 text-center">
+      <a href="/" class="text-[11px] font-semibold text-gray-400 hover:text-slate-700">
+        &larr; Volver al Inicio
       </a>
     </div>
   </div>
 
   <script>
-    // Mostrar / Ocultar contraseñas
-    function togglePassword(inputId, btn) {
-      const input = document.getElementById(inputId);
+    function togglePass(id, btn) {
+      const inp = document.getElementById(id);
       const icon = btn.querySelector('i');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'fa-regular fa-eye-slash text-xs text-slate-900';
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash text-xs text-blue-700';
       } else {
-        input.type = 'password';
+        inp.type = 'password';
         icon.className = 'fa-regular fa-eye text-xs text-gray-400';
       }
     }
 
-    // Máscara automática para formato XXX-XXX-XXXX en tiempo real
-    const telInputProv = document.getElementById('input-telefono-prov');
-    telInputProv.addEventListener('input', function(e) {
-      let valor = e.target.value.replace(/\D/g, '');
-      if (valor.length > 10) valor = valor.slice(0, 10);
-
-      let formateado = '';
-      if (valor.length > 6) {
-        formateado = `${valor.slice(0, 3)}-${valor.slice(3, 6)}-${valor.slice(6)}`;
-      } else if (valor.length > 3) {
-        formateado = `${valor.slice(0, 3)}-${valor.slice(3)}`;
-      } else {
-        formateado = valor;
-      }
-      e.target.value = formateado;
+    const tel = document.getElementById('input-telefono-prov');
+    tel.addEventListener('input', function(e) {
+      let v = e.target.value.replace(/\D/g, '');
+      if (v.length > 10) v = v.slice(0, 10);
+      let f = '';
+      if (v.length > 6) f = `${v.slice(0, 3)}-${v.slice(3, 6)}-${v.slice(6)}`;
+      else if (v.length > 3) f = `${v.slice(0, 3)}-${v.slice(3)}`;
+      else f = v;
+      e.target.value = f;
     });
   </script>
 </body>

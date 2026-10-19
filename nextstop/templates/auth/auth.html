@@ -3,25 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Iniciar Sesión - NextStop</title>
+  <title>Acceso {{ 'Proveedor' if tipo == 'proveedor' else 'Viajero' }} - NextStop</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#F8FAFC] min-h-screen flex items-center justify-center p-6 font-sans">
+<body class="bg-[#F8FAFC] min-h-screen flex items-center justify-center p-6 font-sans text-slate-800">
 
-  <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-xl border border-gray-100">
-    <!-- Logo y Encabezado -->
-    <div class="flex items-center justify-center gap-3 mb-6">
-      <div class="w-10 h-10 bg-orange-500 rounded-2xl flex items-center justify-center text-white text-lg shadow">
-        <i class="fa-solid fa-paper-plane"></i>
+  <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-sm border {% if tipo == 'proveedor' %}border-blue-200{% else %}border-orange-200{% endif %}">
+
+    <!-- Logotipo con color dinámico -->
+    <div class="flex items-center justify-center gap-2.5 mb-6">
+      <div class="w-9 h-9 {% if tipo == 'proveedor' %}bg-[#243572]{% else %}bg-orange-500{% endif %} rounded-xl flex items-center justify-center text-white text-sm shadow">
+        <i class="fa-solid {% if tipo == 'proveedor' %}fa-building{% else %}fa-plane{% endif %}"></i>
       </div>
-      <h2 class="text-2xl font-black text-slate-800">Next<span class="text-orange-500">Stop</span></h2>
+      <h2 class="text-xl font-black text-slate-900">Next<span class="{% if tipo == 'proveedor' %}text-[#243572]{% else %}text-orange-500{% endif %}">Stop</span></h2>
     </div>
 
     <div class="text-center mb-6">
-      <h1 class="text-xl font-black text-slate-800 uppercase tracking-tight">Iniciar Sesión</h1>
-      <p class="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-wider">
-        Portal de {{ 'Agencia / Proveedor' if tipo == 'proveedor' else 'Viajero' }}
+      <h1 class="text-lg font-bold text-slate-900 uppercase tracking-tight">
+        Acceso {{ 'Proveedor' if tipo == 'proveedor' else 'Viajero' }}
+      </h1>
+      <p class="text-xs text-gray-400 mt-0.5">
+        {{ 'Portal de Administración de Agencias' if tipo == 'proveedor' else 'Portal de Clientes y Reservas' }}
       </p>
     </div>
 
@@ -30,7 +33,7 @@
       {% if messages %}
         <div class="space-y-2 mb-4">
           {% for category, message in messages %}
-            <div class="px-4 py-2.5 rounded-xl text-xs font-bold {% if category == 'error' %}bg-red-50 text-red-600 border border-red-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+            <div class="px-4 py-2.5 rounded-xl text-xs font-semibold {% if category == 'error' %}bg-red-50 text-red-600 border border-red-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
               {{ message }}
             </div>
           {% endfor %}
@@ -42,56 +45,56 @@
       <div>
         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo Electrónico</label>
         <div class="relative">
-          <i class="fa-regular fa-envelope absolute left-4 top-3.5 text-gray-400 text-sm"></i>
-          <input type="email" name="correo" required placeholder="correo@ejemplo.com"
-            class="w-full bg-[#F8FAFC] pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
+          <i class="fa-regular fa-envelope absolute left-4 top-3 text-gray-400 text-xs"></i>
+          <input type="email" name="correo" required placeholder="{{ 'agencia@ejemplo.com' if tipo == 'proveedor' else 'viajero@ejemplo.com' }}"
+            class="w-full bg-[#F8FAFC] pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs text-slate-800 focus:ring-2 {% if tipo == 'proveedor' %}focus:ring-[#243572]{% else %}focus:ring-orange-500{% endif %} focus:outline-none">
         </div>
       </div>
 
       <div>
         <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contraseña</label>
         <div class="relative">
-          <i class="fa-solid fa-lock absolute left-4 top-3.5 text-gray-400 text-sm"></i>
-          <input type="password" name="password" id="login-password" required placeholder="••••••••"
-            class="w-full bg-[#F8FAFC] pl-10 pr-11 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
-          <button type="button" onclick="togglePassword('login-password', this)"
-            class="absolute right-3.5 top-2.5 text-gray-400 hover:text-slate-700 transition focus:outline-none p-1">
-            <i class="fa-regular fa-eye text-sm"></i>
+          <i class="fa-solid fa-lock absolute left-4 top-3 text-gray-400 text-xs"></i>
+          <input type="password" name="password" id="login-pass" required placeholder="••••••••"
+            class="w-full bg-[#F8FAFC] pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs text-slate-800 focus:ring-2 {% if tipo == 'proveedor' %}focus:ring-[#243572]{% else %}focus:ring-orange-500{% endif %} focus:outline-none">
+          <button type="button" onclick="togglePass('login-pass', this)" class="absolute right-3 top-2.5 text-gray-400 hover:text-slate-700 p-1">
+            <i class="fa-regular fa-eye text-xs"></i>
           </button>
         </div>
       </div>
 
       <button type="submit"
-        class="w-full py-3 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-extrabold rounded-xl transition uppercase text-xs tracking-wider shadow-lg shadow-orange-500/25">
-        Ingresar a mi cuenta
+        class="w-full py-3 {% if tipo == 'proveedor' %}bg-[#243572] hover:bg-[#1a2754]{% else %}bg-orange-500 hover:bg-orange-600{% endif %} text-white font-bold rounded-xl transition uppercase text-xs tracking-wider shadow-sm">
+        {{ 'Ingresar al Portal' if tipo == 'proveedor' else 'Iniciar Sesión' }}
       </button>
     </form>
 
     <div class="mt-6 text-center text-xs text-gray-500">
-      {% if tipo == 'cliente' %}
-        ¿Aún no tienes cuenta? <a href="/registro/cliente" class="text-orange-500 font-bold hover:underline">Regístrate como Viajero</a>
+      {% if tipo == 'proveedor' %}
+        ¿No has registrado tu agencia? <a href="/registro/proveedor" class="text-blue-700 font-bold hover:underline">Registrar Agencia</a>
       {% else %}
-        ¿Nueva agencia? <a href="/registro/proveedor" class="text-orange-500 font-bold hover:underline">Registra tu Agencia</a>
+        ¿No tienes cuenta? <a href="/registro/cliente" class="text-orange-500 font-bold hover:underline">Regístrate como Viajero</a>
       {% endif %}
     </div>
 
-    <div class="mt-4 text-center">
-      <a href="/" class="text-[11px] font-bold text-gray-400 hover:text-slate-700 transition">
-        &larr; Volver a la página principal
+    <div class="mt-3 text-center">
+      <a href="/" class="text-[11px] font-semibold text-gray-400 hover:text-slate-700">
+        &larr; Volver al Inicio
       </a>
     </div>
   </div>
 
   <script>
-    function togglePassword(inputId, btn) {
-      const input = document.getElementById(inputId);
+    const esProveedor = "{{ tipo }}" === "proveedor";
+    function togglePass(id, btn) {
+      const inp = document.getElementById(id);
       const icon = btn.querySelector('i');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'fa-regular fa-eye-slash text-sm text-orange-500';
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        icon.className = `fa-regular fa-eye-slash text-xs ${esProveedor ? 'text-blue-700' : 'text-orange-500'}`;
       } else {
-        input.type = 'password';
-        icon.className = 'fa-regular fa-eye text-sm text-gray-400';
+        inp.type = 'password';
+        icon.className = 'fa-regular fa-eye text-xs text-gray-400';
       }
     }
   </script>

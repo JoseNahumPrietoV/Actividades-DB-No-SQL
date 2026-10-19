@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Vuelos - NextStop Proveedor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] flex min-h-screen font-sans text-slate-800">
+
+  <!-- SIDEBAR UNIFICADO PROVEEDOR -->
+  <aside class="w-64 h-screen sticky top-0 bg-[#1E2530] text-gray-300 flex flex-col justify-between p-6 shrink-0 z-20">
+    <div>
+      <div class="flex items-center gap-3 mb-10">
+        <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white text-lg shadow">
+          <i class="fa-solid fa-plane-departure"></i>
+        </div>
+        <div>
+          <h2 class="text-white font-extrabold text-lg leading-tight tracking-tight">Next<span class="text-emerald-500">Stop</span></h2>
+          <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">PORTAL PROVEEDOR</p>
+        </div>
+      </div>
+
+      <nav class="space-y-2 text-sm font-semibold">
+        <a href="/dashboard/proveedor" class="flex items-center gap-3 px-4 py-3 rounded-xl transition {% if request.path == '/dashboard/proveedor' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-400{% endif %}">
+          <i class="fa-solid fa-table-cells-large {% if request.path == '/dashboard/proveedor' %}text-emerald-400{% endif %}"></i> Panel Principal
+        </a>
+        <a href="/proveedor/agregar-vuelo" class="flex items-center gap-3 px-4 py-3 rounded-xl transition {% if request.path == '/proveedor/agregar-vuelo' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-400{% endif %}">
+          <i class="fa-solid fa-circle-plus {% if request.path == '/proveedor/agregar-vuelo' %}text-emerald-400{% endif %}"></i> Agregar Vuelo
+        </a>
+        <a href="/proveedor/mis-vuelos" class="flex items-center gap-3 px-4 py-3 rounded-xl transition {% if request.path == '/proveedor/mis-vuelos' or '/proveedor/vuelos/editar' in request.path %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-400{% endif %}">
+          <i class="fa-solid fa-calendar-check {% if request.path == '/proveedor/mis-vuelos' or '/proveedor/vuelos/editar' in request.path %}text-emerald-400{% endif %}"></i> Mis Vuelos
+        </a>
+        <a href="/proveedor/perfil" class="flex items-center gap-3 px-4 py-3 rounded-xl transition {% if request.path == '/proveedor/perfil' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-400{% endif %}">
+          <i class="fa-solid fa-building {% if request.path == '/proveedor/perfil' %}text-emerald-400{% endif %}"></i> Perfil de Agencia
+        </a>
+      </nav>
+    </div>
+
+    <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-[#2D3748]/30 rounded-xl transition text-sm font-semibold">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+    </a>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="flex-1 p-10 overflow-y-auto">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-3xl font-black text-slate-900 tracking-tight">Mis Vuelos</h1>
+        <p class="text-xs text-gray-400 font-semibold mt-1">Gestiona las rutas, disponibilidad y estado operativo.</p>
+      </div>
+      <a href="/proveedor/agregar-vuelo" class="px-5 py-3 bg-[#547352] hover:bg-[#435e41] active:scale-95 text-white font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center gap-2 shadow">
+        <i class="fa-solid fa-circle-plus"></i> Agregar Nuevo Vuelo
+      </a>
+    </div>
+
+    <!-- BÚSQUEDA Y FILTRO -->
+    <div class="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm flex flex-col sm:flex-row gap-4 mb-6">
+      <div class="flex-1 relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400 text-xs"></i>
+        <input type="text" id="input-buscar" value="{{ query_busqueda }}" placeholder="Buscar vuelos..." class="w-full bg-[#F8FAFC] pl-10 pr-4 py-2.5 rounded-2xl border-none text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+      </div>
+      <select id="select-estado" class="bg-[#F8FAFC] px-4 py-2.5 rounded-2xl border-none text-xs font-bold text-slate-700 focus:ring-2 focus:ring-emerald-600 focus:outline-none">
+        <option value="Todos" {% if filtro_estado == 'Todos' or not filtro_estado %}selected{% endif %}>Todos los Estados</option>
+        <option value="A TIEMPO" {% if filtro_estado == 'A TIEMPO' %}selected{% endif %}>A TIEMPO</option>
+        <option value="RETRASADO" {% if filtro_estado == 'RETRASADO' %}selected{% endif %}>RETRASADO</option>
+        <option value="FINALIZADO" {% if filtro_estado == 'FINALIZADO' %}selected{% endif %}>FINALIZADO (Historial)</option>
+      </select>
+    </div>
+
+    <!-- TABLA DE VUELOS -->
+    <div class="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead>
+          <tr class="text-[10px] font-black uppercase text-gray-400 border-b border-gray-100 pb-3">
+            <th class="py-3 px-4">ORIGEN / DESTINO</th>
+            <th class="py-3 px-4">FECHA SALIDA</th>
+            <th class="py-3 px-4">BOLETOS</th>
+            <th class="py-3 px-4">ESTADO OPERATIVO</th>
+            <th class="py-3 px-4 text-center">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50">
+          {% if vuelos %}
+            {% for v in vuelos %}
+              <tr id="row-vuelo-{{ v._id }}" class="hover:bg-gray-50/50 transition {% if v.estado == 'FINALIZADO' %}opacity-70{% endif %}">
+                <td class="py-4 px-4">
+                  <p class="font-extrabold text-slate-800 text-sm">{{ v.destino }}</p>
+                  <p class="text-[10px] text-gray-400 mt-0.5">Desde {{ v.origen }}</p>
+                </td>
+                <td class="py-4 px-4">
+                  <p class="font-bold text-slate-700">{{ v.fecha }}</p>
+                  <p class="text-[11px] text-gray-400">${{ "{:,.0f}".format(v.precio) }} MXN</p>
+                </td>
+                <td class="py-4 px-4">
+                  {% if v.estado == 'FINALIZADO' %}
+                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-gray-100 text-gray-600">
+                      NO DISPONIBLE
+                    </span>
+                  {% elif v.asientos_disponibles > 0 %}
+                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">
+                      DISPONIBLE ({{ v.asientos_disponibles }})
+                    </span>
+                  {% else %}
+                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-100 text-red-800">
+                      AGOTADO
+                    </span>
+                  {% endif %}
+                </td>
+                <td class="py-4 px-4">
+                  <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider
+                    {% if v.estado == 'RETRASADO' %}bg-amber-100 text-amber-800
+                    {% elif v.estado == 'FINALIZADO' %}bg-gray-200 text-gray-700
+                    {% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+                    {{ v.estado }}
+                  </span>
+                </td>
+                <td class="py-4 px-4 text-center relative">
+                  <div class="inline-flex items-center gap-2">
+                    {% if v.estado != 'FINALIZADO' %}
+                      <!-- Solo puede editar si no está finalizado -->
+                      <a href="/proveedor/vuelos/editar/{{ v._id }}" title="Editar Vuelo" class="w-8 h-8 rounded-xl bg-gray-50 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 flex items-center justify-center transition">
+                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                      </a>
+                    {% endif %}
+                    <button type="button" onclick="eliminarVuelo('{{ v._id }}')" title="Eliminar Vuelo" class="w-8 h-8 rounded-xl bg-gray-50 hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center transition">
+                      <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="5" class="py-12 text-center text-gray-400 font-semibold">
+                No se encontraron vuelos publicados para esta agencia.
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    function aplicarFiltros() {
+      const q = document.getElementById('input-buscar').value;
+      const estado = document.getElementById('select-estado').value;
+      window.location.href = `/proveedor/mis-vuelos?q=${encodeURIComponent(q)}&estado=${encodeURIComponent(estado)}`;
+    }
+
+    document.getElementById('input-buscar').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') aplicarFiltros();
+    });
+    document.getElementById('select-estado').addEventListener('change', aplicarFiltros);
+
+    async function eliminarVuelo(vueloId) {
+      if (!confirm("¿Estás seguro de que deseas eliminar este vuelo permanentemente de la plataforma?")) return;
+      try {
+        const res = await fetch(`/api/proveedor/vuelos/eliminar/${vueloId}`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          const row = document.getElementById(`row-vuelo-${vueloId}`);
+          if (row) row.remove();
+        } else {
+          alert(data.error || "No se pudo eliminar el vuelo.");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
