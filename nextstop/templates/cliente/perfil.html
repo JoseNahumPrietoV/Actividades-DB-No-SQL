@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil - NextStop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] flex min-h-screen font-sans">
+
+<!-- Sidebar Lateral Cliente -->
+<aside class="w-64 h-screen sticky top-0 bg-[#1E2530] text-gray-300 flex flex-col justify-between p-6 shrink-0 z-20">
+  <div>
+    <!-- Logo -->
+    <a href="/dashboard/cliente" class="flex items-center gap-3 mb-10 block">
+      <div class="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center text-white text-base shadow">
+        <i class="fa-solid fa-paper-plane"></i>
+      </div>
+      <div>
+        <h2 class="text-white font-extrabold text-lg leading-tight tracking-tight">Next<span class="text-orange-500">Stop</span></h2>
+        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">PORTAL DEL VIAJERO</p>
+      </div>
+    </a>
+
+    <!-- Navegación con estado activo dinámico -->
+    <nav class="space-y-2 text-sm font-semibold">
+      <!-- 1. Buscar Vuelos -->
+      <a href="/dashboard/cliente"
+         class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/dashboard/cliente' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+        <i class="fa-solid fa-magnifying-glass {% if request.path == '/dashboard/cliente' %}text-orange-400{% else %}text-gray-400{% endif %}"></i>
+        Buscar Vuelos
+      </a>
+
+      <!-- 2. Mis Boletos -->
+      <a href="/mis-boletos"
+         class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/mis-boletos' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+        <i class="fa-solid fa-ticket {% if request.path == '/mis-boletos' %}text-orange-400{% else %}text-gray-400{% endif %}"></i>
+        Mis Boletos
+      </a>
+
+      <!-- 3. Favoritos -->
+      <a href="/favoritos"
+         class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/favoritos' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+        <i class="fa-solid fa-heart {% if request.path == '/favoritos' %}text-red-400{% else %}text-gray-400{% endif %}"></i>
+        Favoritos
+      </a>
+
+      <!-- 4. Mi Perfil -->
+      <a href="/perfil"
+         class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/perfil' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+        <i class="fa-solid fa-user {% if request.path == '/perfil' %}text-orange-400{% else %}text-gray-400{% endif %}"></i>
+        Mi Perfil
+      </a>
+    </nav>
+  </div>
+
+  <!-- Botón Cerrar Sesión fijo abajo -->
+  <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-400 hover:bg-[#2D3748]/30 rounded-xl transition duration-150 text-sm font-semibold">
+    <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+  </a>
+</aside>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 p-10 overflow-y-auto">
+    <div class="mb-8">
+      <h1 class="text-3xl font-black text-[#1E2530] tracking-tight italic uppercase">MI PERFIL</h1>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-1">Gestiona tu información personal y de seguridad</p>
+    </div>
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-2 mb-6 max-w-4xl">
+          {% for category, message in messages %}
+            <div class="px-5 py-3 rounded-2xl text-xs font-bold {% if category == 'error' %}bg-red-50 text-red-600 border border-red-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/perfil" class="max-w-4xl">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- Tarjeta Foto de Perfil (Izquierda) -->
+        <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center self-start">
+          <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-6">FOTO DE PERFIL</p>
+          <div class="relative mb-5">
+            <div class="w-32 h-32 bg-[#111827] text-white font-black text-4xl rounded-full flex items-center justify-center shadow-lg border-4 border-gray-50">
+              {{ usuario.nombre[0]|upper }}
+            </div>
+            <button type="button" title="Cambiar Foto" class="absolute bottom-0 right-1 w-9 h-9 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white rounded-full flex items-center justify-center shadow transition border-2 border-white">
+              <i class="fa-solid fa-camera text-xs"></i>
+            </button>
+          </div>
+          <h2 class="text-base font-black text-slate-800">{{ usuario.nombre }}</h2>
+          <p class="text-[11px] font-bold text-gray-400 mt-0.5">Viajero NextStop</p>
+        </div>
+
+        <!-- Tarjetas de Información y Seguridad (Derecha) -->
+        <div class="md:col-span-2 space-y-6">
+
+          <!-- Bloque Información Personal -->
+          <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-4">
+            <h2 class="text-xs font-black uppercase tracking-wider text-slate-800 mb-2">INFORMACIÓN PERSONAL</h2>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Nombre Completo <span class="text-red-500">*</span></label>
+              <div class="relative">
+                <i class="fa-regular fa-user absolute left-4 top-3.5 text-gray-400 text-xs"></i>
+                <input type="text" name="nombre" value="{{ usuario.nombre }}" required class="w-full bg-[#F8FAFC] pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Correo Electrónico <span class="text-red-500">*</span></label>
+                <div class="relative">
+                  <i class="fa-regular fa-envelope absolute left-4 top-3.5 text-gray-400 text-xs"></i>
+                  <input type="email" name="correo" value="{{ usuario.correo }}" required class="w-full bg-[#F8FAFC] pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Teléfono de Contacto <span class="text-red-500">*</span></label>
+                <div class="relative">
+                  <i class="fa-solid fa-phone absolute left-4 top-3.5 text-gray-400 text-xs"></i>
+                  <input type="tel" name="telefono" id="input-telefono-perfil" value="{{ usuario.telefono if usuario.telefono else '229-123-4567' }}" required maxlength="12" pattern="^[0-9]{3}-[0-9]{3}-[0-9]{4}$" placeholder="229-123-4567" class="w-full bg-[#F8FAFC] pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloque Seguridad de la Cuenta -->
+          <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-4">
+            <div>
+              <h2 class="text-xs font-black uppercase tracking-wider text-slate-800">SEGURIDAD DE LA CUENTA</h2>
+              <p class="text-[10px] font-bold text-gray-400 uppercase mt-0.5">Deja estos campos vacíos si no deseas cambiar tu contraseña actual</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nueva Contraseña</label>
+                <div class="relative">
+                  <i class="fa-solid fa-lock absolute left-4 top-3.5 text-gray-400 text-xs"></i>
+                  <input type="password" name="password" id="pass-perfil" placeholder="••••••••" class="w-full bg-[#F8FAFC] pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                  <button type="button" onclick="togglePass('pass-perfil', this)" class="absolute right-3 top-2.5 text-gray-400 hover:text-slate-700 p-1">
+                    <i class="fa-regular fa-eye text-xs"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Confirmar Nueva Contraseña</label>
+                <div class="relative">
+                  <i class="fa-solid fa-lock absolute left-4 top-3.5 text-gray-400 text-xs"></i>
+                  <input type="password" name="password_confirm" id="pass-confirm-perfil" placeholder="••••••••" class="w-full bg-[#F8FAFC] pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                  <button type="button" onclick="togglePass('pass-confirm-perfil', this)" class="absolute right-3 top-2.5 text-gray-400 hover:text-slate-700 p-1">
+                    <i class="fa-regular fa-eye text-xs"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón Guardar Configuración -->
+          <button type="submit" class="w-full py-4 bg-[#547352] hover:bg-[#435e41] active:scale-95 text-white font-extrabold rounded-2xl transition duration-150 uppercase text-xs tracking-wider shadow-lg shadow-[#547352]/30 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-floppy-disk text-xs"></i> GUARDAR CONFIGURACIÓN
+          </button>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    function togglePass(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash text-xs text-emerald-600';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-regular fa-eye text-xs text-gray-400';
+      }
+    }
+
+    const telInput = document.getElementById('input-telefono-perfil');
+    telInput.addEventListener('input', function(e) {
+      let valor = e.target.value.replace(/\D/g, '');
+      if (valor.length > 10) valor = valor.slice(0, 10);
+      let form = '';
+      if (valor.length > 6) form = `${valor.slice(0, 3)}-${valor.slice(3, 6)}-${valor.slice(6)}`;
+      else if (valor.length > 3) form = `${valor.slice(0, 3)}-${valor.slice(3)}`;
+      else form = valor;
+      e.target.value = form;
+    });
+  </script>
+</body>
+</html>

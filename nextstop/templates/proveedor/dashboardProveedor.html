@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Proveedor - NextStop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] flex min-h-screen font-sans">
+
+  <!-- Sidebar Lateral Proveïdor -->
+  <aside class="w-64 bg-[#1E2530] text-gray-300 flex flex-col justify-between p-6 shrink-0">
+    <div>
+      <!-- Logo NextStop Proveïdor -->
+      <div class="flex items-center gap-3 mb-10">
+        <div class="w-9 h-9 bg-[#22C55E]/20 border border-[#22C55E]/40 rounded-xl flex items-center justify-center text-[#22C55E] text-base shadow">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <div>
+          <h2 class="text-white font-extrabold text-lg leading-tight tracking-tight">Next<span class="text-white">Stop</span></h2>
+          <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">PORTAL PROVEEDOR</p>
+        </div>
+      </div>
+
+      <!-- Menú Proveïdor -->
+      <nav class="space-y-2 text-sm font-semibold">
+        <a href="/dashboard/proveedor" class="flex items-center gap-3 px-4 py-3 bg-[#2D3748] text-white rounded-xl shadow-sm transition">
+          <i class="fa-solid fa-table-cells-large text-[#22C55E]"></i> Panel Principal
+        </a>
+        <a href="/proveedor/agregar-vuelo" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+          <i class="fa-regular fa-circle-plus text-gray-400"></i> Agregar Vuelo
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+          <i class="fa-solid fa-plane-departure text-gray-400"></i> Mis Vuelos
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+          <i class="fa-regular fa-building text-gray-400"></i> Perfil de Agencia
+        </a>
+      </nav>
+    </div>
+
+    <!-- Tancar Sessió -->
+    <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-400 rounded-xl transition text-sm font-semibold">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+    </a>
+  </aside>
+
+  <!-- Àrea de Treball Proveïdor -->
+  <main class="flex-1 p-10 overflow-y-auto">
+    <!-- Header de Benvinguda i Filtres -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl font-black text-[#1E2530] tracking-tight">Bienvenido, {{ nombre }}</h1>
+        <p class="text-xs text-gray-500 font-medium mt-1">Aquí tienes el resumen de tu negocio de viajes para hoy.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <select class="bg-white border border-gray-200 text-xs font-semibold text-gray-600 px-4 py-2 rounded-xl focus:outline-none">
+          <option>Mes (Todos)</option>
+        </select>
+        <select class="bg-white border border-gray-200 text-xs font-semibold text-gray-600 px-4 py-2 rounded-xl focus:outline-none">
+          <option>Año (Todos)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Targetes de Mètriques (Stats) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <!-- Vuelos Activos -->
+      <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base">
+            <i class="fa-solid fa-plane"></i>
+          </div>
+          <span class="text-xs font-bold text-emerald-500 flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> +3</span>
+        </div>
+        <p class="text-3xl font-black text-gray-900">5</p>
+        <p class="text-xs text-gray-400 font-semibold mt-1">Vuelos Activos</p>
+      </div>
+
+      <!-- Total Reservas -->
+      <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-base">
+            <i class="fa-regular fa-calendar"></i>
+          </div>
+          <span class="text-xs font-bold text-emerald-500 flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> +12%</span>
+        </div>
+        <p class="text-3xl font-black text-gray-900">1</p>
+        <p class="text-xs text-gray-400 font-semibold mt-1">Total Reservas</p>
+      </div>
+
+      <!-- Ingresos -->
+      <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-10 h-10 rounded-xl bg-slate-50 text-slate-700 flex items-center justify-center text-base">
+            <i class="fa-solid fa-dollar-sign"></i>
+          </div>
+          <span class="text-xs font-bold text-emerald-500 flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> +8%</span>
+        </div>
+        <p class="text-3xl font-black text-gray-900">$983.427</p>
+        <p class="text-xs text-gray-400 font-semibold mt-1">Ingresos</p>
+      </div>
+
+      <!-- Visitas -->
+      <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-base">
+            <i class="fa-regular fa-eye"></i>
+          </div>
+          <span class="text-xs font-bold text-emerald-500 flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> +18%</span>
+        </div>
+        <p class="text-3xl font-black text-gray-900">1.4K</p>
+        <p class="text-xs text-gray-400 font-semibold mt-1">Visitas al Perfil</p>
+      </div>
+    </div>
+
+    <!-- Secció de Taules Inferiors -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Vuelos Recientes -->
+      <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-base font-bold text-gray-900">Vuelos Recientes</h2>
+          <a href="#" class="text-xs font-bold text-emerald-600 hover:underline">Ver todos</a>
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-900">Toronto, Canadá</p>
+                <p class="text-[10px] text-gray-400 uppercase font-semibold">{{ nombre }}</p>
+              </div>
+            </div>
+            <div class="text-xs font-bold text-gray-900">$10000</div>
+            <div class="text-xs text-gray-500">30 May, 2026</div>
+            <span class="px-3 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-lg uppercase">A TIEMPO</span>
+          </div>
+
+          <div class="flex items-center justify-between p-3 rounded-2xl hover:bg-gray-50 transition border border-transparent hover:border-gray-100">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-900">Ciudad de México, México</p>
+                <p class="text-[10px] text-gray-400 uppercase font-semibold">{{ nombre }}</p>
+              </div>
+            </div>
+            <div class="text-xs font-bold text-gray-900">$3593</div>
+            <div class="text-xs text-gray-500">05 Jun, 2026</div>
+            <span class="px-3 py-1 bg-amber-50 text-amber-700 text-[10px] font-bold rounded-lg uppercase">A TIEMPO</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Destinos Principales -->
+      <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+        <h2 class="text-base font-bold text-gray-900 mb-6">Destinos Principales</h2>
+        <div class="flex items-center gap-4">
+          <div class="w-8 h-8 rounded-full border border-gray-200 text-xs font-bold flex items-center justify-center text-gray-500">
+            1
+          </div>
+          <div>
+            <p class="text-xs font-bold text-gray-900">Atlanta, Estados Unidos</p>
+            <p class="text-[10px] text-gray-400 font-semibold">1 reservas</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

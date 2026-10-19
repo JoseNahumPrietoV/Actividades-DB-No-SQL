@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Favoritos - NextStop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] flex min-h-screen font-sans">
+
+  <!-- Sidebar Lateral Cliente -->
+  <aside class="w-64 h-screen sticky top-0 bg-[#1E2530] text-gray-300 flex flex-col justify-between p-6 shrink-0 z-20">
+    <div>
+      <a href="/dashboard/cliente" class="flex items-center gap-3 mb-10 block">
+        <div class="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center text-white text-base shadow">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <div>
+          <h2 class="text-white font-extrabold text-lg leading-tight tracking-tight">Next<span class="text-orange-500">Stop</span></h2>
+          <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">PORTAL DEL VIAJERO</p>
+        </div>
+      </a>
+
+      <nav class="space-y-2 text-sm font-semibold">
+        <a href="/dashboard/cliente"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/dashboard/cliente' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+          <i class="fa-solid fa-magnifying-glass {% if request.path == '/dashboard/cliente' %}text-orange-400{% else %}text-gray-400{% endif %}"></i> Buscar Vuelos
+        </a>
+        <a href="/mis-boletos"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/mis-boletos' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+          <i class="fa-solid fa-ticket {% if request.path == '/mis-boletos' %}text-orange-400{% else %}text-gray-400{% endif %}"></i> Mis Boletos
+        </a>
+        <a href="/favoritos"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/favoritos' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+          <i class="fa-solid fa-heart {% if request.path == '/favoritos' %}text-red-400{% else %}text-gray-400{% endif %}"></i> Favoritos
+        </a>
+        <a href="/perfil"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/perfil' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+          <i class="fa-solid fa-user {% if request.path == '/perfil' %}text-orange-400{% else %}text-gray-400{% endif %}"></i> Mi Perfil
+        </a>
+      </nav>
+    </div>
+
+    <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-400 hover:bg-[#2D3748]/30 rounded-xl transition duration-150 text-sm font-semibold">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+    </a>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 p-10 overflow-y-auto">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-3xl font-black text-[#1E2530] tracking-tight italic uppercase">VUELOS FAVORITOS</h1>
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-1">Tus vuelos guardados para reservar más tarde</p>
+      </div>
+      <a href="/perfil" title="Ir a Mi Perfil" class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-gray-100 hover:shadow-md hover:border-orange-200 transition duration-150 group">
+        <div class="w-8 h-8 bg-[#111827] text-white font-bold rounded-full flex items-center justify-center text-xs group-hover:bg-orange-500 transition duration-150">
+          {{ nombre[0]|upper }}
+        </div>
+        <span class="text-sm font-bold text-gray-800 group-hover:text-orange-600 transition duration-150">{{ nombre }}</span>
+      </a>
+    </div>
+
+    <div id="contenedor-favoritos" class="max-w-4xl space-y-4">
+      {% if vuelos %}
+        {% for vuelo in vuelos %}
+          <div id="card-vuelo-{{ vuelo._id }}" class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6 hover:shadow-md transition duration-300">
+            <div class="flex items-center gap-5 w-full md:w-auto">
+              <div class="w-14 h-14 bg-slate-900 text-white font-black text-lg rounded-full flex items-center justify-center shrink-0 shadow">
+                {{ vuelo.aerolinea_codigo }}
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1.5">
+                  <span class="text-[9px] font-black uppercase tracking-wider bg-orange-100 text-orange-600 px-2 py-0.5 rounded-md">AMADEUS REAL-TIME</span>
+                  <span class="text-[9px] font-black uppercase tracking-wider bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md">{{ vuelo.tipo_vuelo }}</span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+                  {{ vuelo.codigo_origen }} <i class="fa-solid fa-arrow-right text-sm text-gray-400"></i> {{ vuelo.codigo_destino }}
+                </h3>
+                <p class="text-[11px] font-bold text-gray-400 uppercase mt-0.5">SALIDA: {{ vuelo.hora_salida }} &bull; {{ vuelo.fecha }}</p>
+                <p class="text-[10px] text-gray-500 mt-0.5">{{ vuelo.origen }} &rarr; {{ vuelo.destino }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between md:justify-end gap-5 w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0">
+              <div class="text-right">
+                <p class="text-[9px] font-bold text-gray-400 uppercase">PRECIO TOTAL</p>
+                <p class="text-3xl font-black text-slate-900 leading-none">
+                  ${{ "%.1f"|format(vuelo.precio) }} <span class="text-xs font-bold text-gray-400">{{ vuelo.moneda }}</span>
+                </p>
+              </div>
+              <div class="flex items-center gap-3">
+                <button type="button" onclick="quitarFavorito('{{ vuelo._id }}')" title="Quitar de favoritos" class="px-4 py-3 bg-red-50 text-red-600 hover:bg-red-500 hover:text-white text-xs font-bold rounded-2xl border border-red-200 transition active:scale-95 flex items-center gap-2 shadow-sm">
+                  <i class="fa-solid fa-trash-can"></i> Quitar
+                </button>
+                <a href="/reservar/{{ vuelo._id }}" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-black tracking-wider uppercase rounded-2xl shadow-lg shadow-emerald-600/30 transition">
+                  SELECCIONAR VUELO
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div id="mensaje-vacio" class="border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center bg-white/50">
+          <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 text-2xl mx-auto mb-4">
+            <i class="fa-regular fa-heart"></i>
+          </div>
+          <p class="text-sm font-semibold text-gray-500">No tienes vuelos guardados en tus favoritos.</p>
+          <a href="/dashboard/cliente" class="inline-block mt-4 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-bold rounded-xl text-xs transition shadow-md shadow-orange-500/20">
+            Explorar Vuelos
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <script>
+    async function quitarFavorito(vueloId) {
+      try {
+        const res = await fetch(`/api/favoritos/toggle/${vueloId}`, { method: 'POST' });
+        const data = await res.json();
+        if (data.success && !data.es_favorito) {
+          const card = document.getElementById(`card-vuelo-${vueloId}`);
+          if (card) {
+            card.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+              card.remove();
+              const cont = document.getElementById('contenedor-favoritos');
+              if (cont && cont.children.length === 0) {
+                cont.innerHTML = `
+                  <div class="border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center bg-white/50">
+                    <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 text-2xl mx-auto mb-4">
+                      <i class="fa-regular fa-heart"></i>
+                    </div>
+                    <p class="text-sm font-semibold text-gray-500">No tienes vuelos guardados en tus favoritos.</p>
+                    <a href="/dashboard/cliente" class="inline-block mt-4 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-bold rounded-xl text-xs transition shadow-md shadow-orange-500/20">
+                      Explorar Vuelos
+                    </a>
+                  </div>`;
+              }
+            }, 300);
+          }
+        }
+      } catch (err) {
+        console.error("Error al quitar favorito:", err);
+      }
+    }
+  </script>
+</body>
+</html>

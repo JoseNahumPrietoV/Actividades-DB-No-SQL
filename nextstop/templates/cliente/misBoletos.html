@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Boletos - NextStop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] flex min-h-screen font-sans">
+
+  <!-- Sidebar Lateral Cliente -->
+  <aside class="w-64 h-screen sticky top-0 bg-[#1E2530] text-gray-300 flex flex-col justify-between p-6 shrink-0 z-20">
+    <div>
+      <a href="/dashboard/cliente" class="flex items-center gap-3 mb-10 block">
+        <div class="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center text-white text-base shadow">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <div>
+          <h2 class="text-white font-extrabold text-lg leading-tight tracking-tight">Next<span class="text-orange-500">Stop</span></h2>
+          <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">PORTAL DEL VIAJERO</p>
+        </div>
+      </a>
+
+      <nav class="space-y-2 text-sm font-semibold">
+        <a href="/dashboard/cliente"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/dashboard/cliente' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+          <i class="fa-solid fa-magnifying-glass {% if request.path == '/dashboard/cliente' %}text-orange-400{% else %}text-gray-400{% endif %}"></i> Buscar Vuelos
+        </a>
+        <a href="/mis-boletos"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/mis-boletos' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+          <i class="fa-solid fa-ticket {% if request.path == '/mis-boletos' %}text-orange-400{% else %}text-gray-400{% endif %}"></i> Mis Boletos
+        </a>
+        <a href="/favoritos"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/favoritos' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+          <i class="fa-solid fa-heart {% if request.path == '/favoritos' %}text-red-400{% else %}text-gray-400{% endif %}"></i> Favoritos
+        </a>
+        <a href="/perfil"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl transition duration-150 {% if request.path == '/perfil' %}bg-[#2D3748] text-white shadow-sm{% else %}hover:bg-[#2D3748]/50 hover:text-white text-gray-300{% endif %}">
+          <i class="fa-solid fa-user {% if request.path == '/perfil' %}text-orange-400{% else %}text-gray-400{% endif %}"></i> Mi Perfil
+        </a>
+      </nav>
+    </div>
+
+    <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-400 hover:bg-[#2D3748]/30 rounded-xl transition duration-150 text-sm font-semibold">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+    </a>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 p-10 overflow-y-auto">
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-3xl font-black text-[#1E2530] tracking-tight italic uppercase">MIS BOLETOS Y VIAJES</h1>
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-1">Consulta tus itinerarios y administra tus reservaciones activas</p>
+      </div>
+      <a href="/perfil" title="Ir a Mi Perfil" class="flex items-center gap-3 bg-white px-5 py-2.5 rounded-full shadow-sm border border-gray-100 hover:shadow-md hover:border-orange-200 transition duration-150 group">
+        <div class="w-8 h-8 bg-[#111827] text-white font-bold rounded-full flex items-center justify-center text-xs group-hover:bg-orange-500 transition duration-150">
+          {{ nombre[0]|upper }}
+        </div>
+        <span class="text-sm font-bold text-gray-800 group-hover:text-orange-600 transition duration-150">{{ nombre }}</span>
+      </a>
+    </div>
+
+    <!-- Lista de Reservaciones -->
+    <div class="max-w-4xl space-y-6">
+      {% if reservas %}
+        {% for r in reservas %}
+          <div id="card-reserva-{{ r._id }}" class="bg-white rounded-3xl p-7 shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between gap-6 hover:shadow-md transition">
+            <div class="space-y-4 flex-1">
+              <div class="flex flex-wrap items-center gap-3">
+                <span id="badge-estado-{{ r._id }}" class="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full {% if r.estado == 'CONFIRMADO' %}bg-emerald-100 text-emerald-800 border border-emerald-200{% else %}bg-red-100 text-red-800 border border-red-200{% endif %}">
+                  {{ r.estado }}
+                </span>
+                <span class="text-[10px] font-black uppercase tracking-wider bg-orange-100 text-orange-700 px-3 py-1 rounded-full border border-orange-200">
+                  CÓDIGO: {{ r.codigo_confirmacion }}
+                </span>
+                <span class="text-xs text-gray-400 font-semibold">
+                  Reservado el: {{ r.creado_en.strftime('%d/%m/%Y a las %H:%M') if r.creado_en else 'Reciente' }}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-5">
+                <div class="w-14 h-14 bg-slate-900 text-white font-black text-lg rounded-2xl flex items-center justify-center shrink-0 shadow">
+                  {{ r.aerolinea_codigo if r.aerolinea_codigo else 'NS' }}
+                </div>
+                <div>
+                  <h3 class="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+                    {{ r.origen }} <i class="fa-solid fa-arrow-right text-sm text-gray-400"></i> {{ r.destino }}
+                  </h3>
+                  <p class="text-[11px] font-bold text-gray-400 uppercase mt-0.5">
+                    FECHA: {{ r.fecha }} &bull; SALIDA: {{ r.hora_salida if r.hora_salida else '06:00 HRS' }}
+                  </p>
+                  {% if r.origen_nombre and r.destino_nombre %}
+                    <p class="text-[10px] text-gray-500 mt-0.5">{{ r.origen_nombre }} &rarr; {{ r.destino_nombre }}</p>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="bg-gray-50/80 rounded-2xl p-4 border border-gray-100 text-xs">
+                <p class="font-bold text-slate-700 uppercase text-[10px] tracking-wider mb-2">Pasajeros registrados ({{ r.pasajeros }}):</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {% for p in r.detalles_pasajeros %}
+                    <div class="flex items-center gap-2 text-slate-600">
+                      <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 font-black text-[10px] flex items-center justify-center">
+                        {{ p.asiento }}
+                      </span>
+                      <span class="font-bold text-slate-800">{{ p.nombre_completo }}</span>
+                      <span class="text-gray-400 text-[11px]">({{ p.tipo_id }})</span>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col justify-between items-end border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6 min-w-[180px]">
+              <div class="text-right w-full">
+                <p class="text-[9px] font-bold text-gray-400 uppercase">TOTAL PAGADO</p>
+                <p class="text-2xl font-black text-slate-900">${{ "{:,.1f}".format(r.total) }} <span class="text-xs text-gray-400">MXN</span></p>
+                <p class="text-[11px] text-gray-400 font-medium mt-1">Asientos: {{ r.asientos|join(', ') }}</p>
+              </div>
+
+              <div id="contenedor-accion-{{ r._id }}" class="w-full mt-4">
+                {% if r.estado == 'CONFIRMADO' %}
+                  <button type="button" onclick="confirmarCancelacion('{{ r._id }}', '{{ r.codigo_confirmacion }}')" class="w-full py-2.5 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 font-bold text-xs rounded-xl border border-red-200 transition active:scale-95 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-ban text-xs"></i> Cancelar Boleto
+                  </button>
+                {% else %}
+                  <div class="w-full py-2.5 bg-gray-100 text-gray-400 font-bold text-xs rounded-xl text-center cursor-not-allowed">
+                    Trámite Cancelado
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="border-2 border-dashed border-gray-200 rounded-3xl p-12 text-center bg-white/50">
+          <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-400 text-2xl mx-auto mb-4">
+            <i class="fa-solid fa-ticket"></i>
+          </div>
+          <p class="text-sm font-semibold text-gray-500">Aún no has comprado ningún boleto de avión.</p>
+          <a href="/dashboard/cliente" class="inline-block mt-4 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-bold rounded-xl text-xs transition shadow-md shadow-orange-500/20">
+            Buscar y Reservar Vuelos
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <div id="modal-cancelar" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-gray-100">
+      <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-xl mb-4">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 class="text-lg font-black text-slate-800 mb-1">¿Deseas cancelar este boleto?</h3>
+      <p class="text-xs text-gray-500 mb-4">
+        Estás a punto de cancelar la reserva con código <span id="modal-codigo-cancelar" class="font-bold text-red-600"></span>. Tus asientos quedarán liberados inmediatamente para otros usuarios y se registrará en la base de datos.
+      </p>
+
+      <div class="flex gap-3">
+        <button type="button" onclick="cerrarModalCancelar()" class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 active:scale-95 text-gray-700 font-bold rounded-xl text-xs uppercase transition">
+          Mantener Boleto
+        </button>
+        <button type="button" id="btn-ejecutar-cancelar" class="flex-1 py-3 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-red-600/30 transition">
+          Confirmar Cancelación
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let idReservaSeleccionada = null;
+
+    function confirmarCancelacion(reservaId, codigo) {
+      idReservaSeleccionada = reservaId;
+      document.getElementById('modal-codigo-cancelar').innerText = codigo;
+      document.getElementById('modal-cancelar').classList.remove('hidden');
+    }
+
+    function cerrarModalCancelar() {
+      idReservaSeleccionada = null;
+      document.getElementById('modal-cancelar').classList.add('hidden');
+    }
+
+    document.getElementById('btn-ejecutar-cancelar').addEventListener('click', async () => {
+      if (!idReservaSeleccionada) return;
+
+      try {
+        const res = await fetch(`/api/reservas/cancelar/${idReservaSeleccionada}`, { method: 'POST' });
+        const data = await res.json();
+
+        if (data.success) {
+          const badge = document.getElementById(`badge-estado-${idReservaSeleccionada}`);
+          badge.className = 'text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-red-100 text-red-800 border border-red-200';
+          badge.innerText = 'CANCELADO';
+
+          const accion = document.getElementById(`contenedor-accion-${idReservaSeleccionada}`);
+          accion.innerHTML = `
+            <div class="w-full py-2.5 bg-gray-100 text-gray-400 font-bold text-xs rounded-xl text-center cursor-not-allowed">
+              Trámite Cancelado
+            </div>
+          `;
+
+          cerrarModalCancelar();
+        } else {
+          alert(data.error || "No se pudo cancelar la reserva.");
+        }
+      } catch (err) {
+        console.error("Error al cancelar reserva:", err);
+      }
+    });
+  </script>
+</body>
+</html>

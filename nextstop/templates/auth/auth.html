@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - NextStop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] min-h-screen flex items-center justify-center p-6 font-sans">
+
+  <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-xl border border-gray-100">
+    <!-- Logo y Encabezado -->
+    <div class="flex items-center justify-center gap-3 mb-6">
+      <div class="w-10 h-10 bg-orange-500 rounded-2xl flex items-center justify-center text-white text-lg shadow">
+        <i class="fa-solid fa-paper-plane"></i>
+      </div>
+      <h2 class="text-2xl font-black text-slate-800">Next<span class="text-orange-500">Stop</span></h2>
+    </div>
+
+    <div class="text-center mb-6">
+      <h1 class="text-xl font-black text-slate-800 uppercase tracking-tight">Iniciar Sesión</h1>
+      <p class="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-wider">
+        Portal de {{ 'Agencia / Proveedor' if tipo == 'proveedor' else 'Viajero' }}
+      </p>
+    </div>
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-2 mb-4">
+          {% for category, message in messages %}
+            <div class="px-4 py-2.5 rounded-xl text-xs font-bold {% if category == 'error' %}bg-red-50 text-red-600 border border-red-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/login/{{ tipo }}" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo Electrónico</label>
+        <div class="relative">
+          <i class="fa-regular fa-envelope absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+          <input type="email" name="correo" required placeholder="correo@ejemplo.com"
+            class="w-full bg-[#F8FAFC] pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contraseña</label>
+        <div class="relative">
+          <i class="fa-solid fa-lock absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+          <input type="password" name="password" id="login-password" required placeholder="••••••••"
+            class="w-full bg-[#F8FAFC] pl-10 pr-11 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
+          <button type="button" onclick="togglePassword('login-password', this)"
+            class="absolute right-3.5 top-2.5 text-gray-400 hover:text-slate-700 transition focus:outline-none p-1">
+            <i class="fa-regular fa-eye text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit"
+        class="w-full py-3 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-extrabold rounded-xl transition uppercase text-xs tracking-wider shadow-lg shadow-orange-500/25">
+        Ingresar a mi cuenta
+      </button>
+    </form>
+
+    <div class="mt-6 text-center text-xs text-gray-500">
+      {% if tipo == 'cliente' %}
+        ¿Aún no tienes cuenta? <a href="/registro/cliente" class="text-orange-500 font-bold hover:underline">Regístrate como Viajero</a>
+      {% else %}
+        ¿Nueva agencia? <a href="/registro/proveedor" class="text-orange-500 font-bold hover:underline">Registra tu Agencia</a>
+      {% endif %}
+    </div>
+
+    <div class="mt-4 text-center">
+      <a href="/" class="text-[11px] font-bold text-gray-400 hover:text-slate-700 transition">
+        &larr; Volver a la página principal
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash text-sm text-orange-500';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-regular fa-eye text-sm text-gray-400';
+      }
+    }
+  </script>
+</body>
+</html>

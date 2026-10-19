@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Vuelo Confirmado! - NextStop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] flex min-h-screen font-sans">
+
+  <aside class="w-64 bg-[#1E2530] text-gray-300 flex flex-col justify-between p-6 shrink-0">
+    <div>
+      <div class="flex items-center gap-3 mb-10">
+        <div class="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center text-white text-base shadow">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <div>
+          <h2 class="text-white font-extrabold text-lg leading-tight tracking-tight">Next<span class="text-orange-500">Stop</span></h2>
+          <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">PORTAL DEL VIAJERO</p>
+        </div>
+      </div>
+
+     <nav class="space-y-2 text-sm font-semibold">
+  <a href="/dashboard/cliente" class="flex items-center gap-3 px-4 py-3 bg-[#2D3748] text-white rounded-xl shadow-sm transition">
+    <i class="fa-solid fa-magnifying-glass text-orange-400"></i> Buscar Vuelos
+  </a>
+  <a href="/mis-boletos" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+    <i class="fa-solid fa-ticket text-gray-400"></i> Mis Boletos
+  </a>
+  <a href="/favoritos" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+    <i class="fa-regular fa-heart text-gray-400"></i> Favoritos
+  </a>
+  <a href="/perfil" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+    <i class="fa-regular fa-user text-gray-400"></i> Mi Perfil
+  </a>
+</nav>
+    </div>
+
+    <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-400 rounded-xl text-sm font-semibold">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+    </a>
+  </aside>
+
+  <main class="flex-1 p-10 overflow-y-auto flex flex-col items-center justify-center">
+    <div class="flex items-center justify-center gap-10 mb-8 text-xs font-bold uppercase tracking-wider w-full max-w-lg">
+      <div class="flex items-center gap-2 text-gray-400"><span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-check"></i></span> SELECCIONAR ASIENTO</div>
+      <div class="flex items-center gap-2 text-gray-400"><span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-check"></i></span> DATOS DEL PASAJERO</div>
+      <div class="flex items-center gap-2 text-emerald-700"><span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">3</span> PAGO</div>
+    </div>
+
+    <div class="bg-white p-10 rounded-3xl border border-gray-100 shadow-xl max-w-xl w-full text-center">
+      <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 shadow-inner">
+        <i class="fa-solid fa-check"></i>
+      </div>
+
+      <h1 class="text-3xl font-black text-slate-800 tracking-tight">¡Vuelo Confirmado!</h1>
+      <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1 mb-8">TU PAGO HA SIDO PROCESADO DE MANERA SEGURA</p>
+
+      <div class="bg-blue-50/60 rounded-2xl p-6 text-left space-y-3 mb-8 text-xs font-semibold text-slate-700 border border-blue-100">
+        <p>✈ <span class="font-bold">Ruta:</span> {{ reserva.origen }} &rarr; {{ reserva.destino }}</p>
+        <p>👥 <span class="font-bold">Total Pasajeros:</span> {{ reserva.pasajeros }}</p>
+        <p>💺 <span class="font-bold">Asientos Reservados:</span> {{ reserva.asientos|join(', ') }}</p>
+        <p>🔑 <span class="font-bold">Código de Confirmación:</span> <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-lg font-black text-xs">{{ reserva.codigo_confirmacion }}</span></p>
+        <p>💵 <span class="font-bold">Monto Total Cargado:</span> <span class="text-emerald-700 font-extrabold text-sm">${{ "{:,.1f}".format(reserva.total) }} MXN</span></p>
+
+        <div class="border-t border-blue-200/60 pt-3 mt-3">
+          <p class="text-[11px] font-bold text-gray-500 uppercase mb-2">Pasajeros asignados:</p>
+          <ul class="space-y-1">
+            {% for p in reserva.detalles_pasajeros %}
+              <li class="text-slate-600">• Asiento {{ p.asiento }}: <span class="font-bold text-slate-800">{{ p.nombre_completo }}</span> (Doc: {{ p.tipo_id }})</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <a href="/dashboard/cliente" class="block w-full py-4 bg-slate-900 hover:bg-black active:scale-95 text-white text-xs font-black uppercase tracking-wider rounded-2xl transition duration-150 shadow-lg">
+        FINALIZAR Y VOLVER AL MENÚ PRINCIPAL
+      </a>
+
+      <p class="text-[11px] text-gray-400 mt-4 italic">Al finalizar la compra, al correo registrado le llegará la confirmación del vuelo.</p>
+    </div>
+  </main>
+</body>
+</html>

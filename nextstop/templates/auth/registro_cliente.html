@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro Viajero - NextStop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] min-h-screen flex items-center justify-center p-6 font-sans">
+
+  <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-xl border border-gray-100">
+    <!-- Logo -->
+    <div class="flex items-center justify-center gap-3 mb-4">
+      <div class="w-10 h-10 bg-orange-500 rounded-2xl flex items-center justify-center text-white text-lg shadow">
+        <i class="fa-solid fa-paper-plane"></i>
+      </div>
+      <h2 class="text-2xl font-black text-slate-800">Next<span class="text-orange-500">Stop</span></h2>
+    </div>
+
+    <div class="text-center mb-6">
+      <h1 class="text-xl font-black text-slate-800 uppercase tracking-tight">Registro de Viajero</h1>
+      <p class="text-xs font-semibold text-gray-400 mt-1 uppercase tracking-wider">Crea tu cuenta para buscar y reservar vuelos</p>
+    </div>
+
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-2 mb-4">
+          {% for category, message in messages %}
+            <div class="px-4 py-2.5 rounded-xl text-xs font-bold {% if category == 'error' %}bg-red-50 text-red-600 border border-red-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/registro/cliente" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre Completo</label>
+        <input type="text" name="nombre" required placeholder="Ej. Juan Pérez"
+          class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Correo Electrónico</label>
+        <input type="email" name="correo" required placeholder="correo@ejemplo.com"
+          class="w-full bg-[#F8FAFC] px-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
+      </div>
+
+      <div>
+        <div class="flex justify-between items-center mb-1">
+          <label class="block text-xs font-bold text-slate-700 uppercase">Teléfono de Contacto</label>
+          <span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">Formato: XXX-XXX-XXXX</span>
+        </div>
+        <div class="relative">
+          <i class="fa-solid fa-phone absolute left-4 top-3 text-gray-400 text-xs"></i>
+          <input type="tel" name="telefono" id="input-telefono" required maxlength="12"
+            pattern="^[0-9]{3}-[0-9]{3}-[0-9]{4}$" title="El formato debe ser XXX-XXX-XXXX con 10 dígitos numéricos"
+            placeholder="229-123-4567"
+            class="w-full bg-[#F8FAFC] pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-orange-500 focus:outline-none tracking-wider">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contraseña</label>
+          <div class="relative">
+            <input type="password" name="password" id="reg-cliente-pass" required placeholder="••••••••"
+              class="w-full bg-[#F8FAFC] pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
+            <button type="button" onclick="togglePassword('reg-cliente-pass', this)"
+              class="absolute right-3 top-2 text-gray-400 hover:text-slate-700 transition focus:outline-none p-1">
+              <i class="fa-regular fa-eye text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Confirmar Contraseña</label>
+          <div class="relative">
+            <input type="password" name="password_confirm" id="reg-cliente-confirm" required placeholder="••••••••"
+              class="w-full bg-[#F8FAFC] pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-slate-800 focus:ring-2 focus:ring-orange-500 focus:outline-none">
+            <button type="button" onclick="togglePassword('reg-cliente-confirm', this)"
+              class="absolute right-3 top-2 text-gray-400 hover:text-slate-700 transition focus:outline-none p-1">
+              <i class="fa-regular fa-eye text-xs"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Términos y Condiciones -->
+      <div class="pt-2">
+        <label class="flex items-start gap-2.5 cursor-pointer">
+          <input type="checkbox" name="terminos" required
+            class="mt-0.5 rounded border-gray-300 text-orange-500 focus:ring-orange-500 w-4 h-4">
+          <span class="text-xs text-gray-600 leading-tight">
+            Acepto los <a href="#" class="text-orange-600 font-bold hover:underline">Términos y Condiciones</a> del servicio y la <a href="#" class="text-orange-600 font-bold hover:underline">Política de Privacidad</a> de NextStop.
+          </span>
+        </label>
+      </div>
+
+      <button type="submit"
+        class="w-full py-3.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-extrabold rounded-xl transition uppercase text-xs tracking-wider shadow-lg shadow-orange-500/25">
+        Crear Cuenta de Viajero
+      </button>
+    </form>
+
+    <div class="mt-6 text-center text-xs text-gray-500">
+      ¿Ya tienes cuenta? <a href="/login/cliente" class="text-orange-500 font-bold hover:underline">Iniciar Sesión</a>
+    </div>
+
+    <div class="mt-4 text-center">
+      <a href="/" class="text-[11px] font-bold text-gray-400 hover:text-slate-700 transition">
+        &larr; Volver a la página principal
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Mostrar / Ocultar contraseñas
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-regular fa-eye-slash text-xs text-orange-500';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-regular fa-eye text-xs text-gray-400';
+      }
+    }
+
+    // Máscara automática para formato XXX-XXX-XXXX en tiempo real
+    const telInput = document.getElementById('input-telefono');
+    telInput.addEventListener('input', function(e) {
+      let valor = e.target.value.replace(/\D/g, ''); // solo dígitos
+      if (valor.length > 10) valor = valor.slice(0, 10);
+
+      let formateado = '';
+      if (valor.length > 6) {
+        formateado = `${valor.slice(0, 3)}-${valor.slice(3, 6)}-${valor.slice(6)}`;
+      } else if (valor.length > 3) {
+        formateado = `${valor.slice(0, 3)}-${valor.slice(3)}`;
+      } else {
+        formateado = valor;
+      }
+      e.target.value = formateado;
+    });
+  </script>
+</body>
+</html>

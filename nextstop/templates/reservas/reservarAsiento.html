@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservar Vuelo - Selección de Asiento</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .seat-selected {
+      background-color: #10B981 !important;
+      color: #064E3B !important;
+      font-weight: 900 !important;
+      border: 2px solid #047857 !important;
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] flex min-h-screen font-sans">
+
+  <!-- Sidebar Lateral con todas las rutas enlazadas -->
+  <aside class="w-64 bg-[#1E2530] text-gray-300 flex flex-col justify-between p-6 shrink-0">
+    <div>
+      <div class="flex items-center gap-3 mb-10">
+        <div class="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center text-white text-base shadow">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <div>
+          <h2 class="text-white font-extrabold text-lg leading-tight tracking-tight">Next<span class="text-orange-500">Stop</span></h2>
+          <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">PORTAL DEL VIAJERO</p>
+        </div>
+      </div>
+
+<nav class="space-y-2 text-sm font-semibold">
+  <a href="/dashboard/cliente" class="flex items-center gap-3 px-4 py-3 bg-[#2D3748] text-white rounded-xl shadow-sm transition">
+    <i class="fa-solid fa-magnifying-glass text-orange-400"></i> Buscar Vuelos
+  </a>
+  <a href="/mis-boletos" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+    <i class="fa-solid fa-ticket text-gray-400"></i> Mis Boletos
+  </a>
+  <a href="/favoritos" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+    <i class="fa-regular fa-heart text-gray-400"></i> Favoritos
+  </a>
+  <a href="/perfil" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+    <i class="fa-regular fa-user text-gray-400"></i> Mi Perfil
+  </a>
+</nav>
+    </div>
+
+    <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-400 rounded-xl text-sm font-semibold">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+    </a>
+  </aside>
+
+  <!-- Contenido -->
+  <main class="flex-1 p-10 overflow-y-auto">
+    <a href="/dashboard/cliente" class="text-xs font-bold text-gray-500 hover:text-gray-900 flex items-center gap-2 mb-4">
+      <i class="fa-solid fa-arrow-left"></i> Volver a resultados
+    </a>
+    <h1 class="text-3xl font-black text-[#1E2530] mb-8">Reservar Vuelo</h1>
+
+    <!-- Pasos superiores -->
+    <div class="flex items-center justify-center gap-10 mb-8 text-xs font-bold uppercase tracking-wider">
+      <div class="flex items-center gap-2 text-emerald-700">
+        <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">1</span> SELECCIONAR ASIENTO
+      </div>
+      <div class="flex items-center gap-2 text-gray-400">
+        <span class="w-6 h-6 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-[10px]">2</span> DATOS DEL PASAJERO
+      </div>
+      <div class="flex items-center gap-2 text-gray-400">
+        <span class="w-6 h-6 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-[10px]">3</span> PAGO
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Resumen Cabecera -->
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">ECONÓMICA</span>
+              <span class="text-[9px] font-black uppercase tracking-wider bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md">{{ vuelo.aerolinea_codigo }}</span>
+            </div>
+            <div class="flex items-center gap-6">
+              <div>
+                <p class="text-3xl font-black text-slate-800">{{ vuelo.hora_salida.split()[0] if ' ' in vuelo.hora_salida else vuelo.hora_salida }}</p>
+                <p class="text-xs font-bold text-gray-400 uppercase">{{ vuelo.codigo_origen }}</p>
+              </div>
+              <div class="text-center text-[10px] text-gray-400 font-bold">
+                11h 15m
+                <div class="w-16 border-t-2 border-dashed border-gray-300 my-1"></div>
+              </div>
+              <div>
+                <p class="text-3xl font-black text-slate-800">04:45</p>
+                <p class="text-xs font-bold text-gray-400 uppercase">{{ vuelo.codigo_destino }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-xs font-bold text-gray-400 uppercase italic">{{ vuelo.fecha }}</p>
+          </div>
+        </div>
+
+        <!-- Panel de Asientos -->
+        <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+          <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
+            <div>
+              <p class="text-sm font-bold text-slate-900">¿Cuántos boletos deseas comprar?</p>
+              <p class="text-xs text-gray-400">Podrás elegir un asiento por cada viajero asignado</p>
+            </div>
+            <select id="select-pasajeros" onchange="actualizarCupoPasajeros()" class="bg-gray-50 border border-gray-300 text-xs font-extrabold text-slate-800 rounded-2xl px-5 py-2.5 focus:ring-2 focus:ring-emerald-500">
+              <option value="1">1 Pasajero</option>
+              <option value="2">2 Pasajeros</option>
+              <option value="3">3 Pasajeros</option>
+              <option value="4">4 Pasajeros</option>
+              <option value="5">5 Pasajeros</option>
+            </select>
+          </div>
+
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xs font-black uppercase tracking-wider text-slate-800">SELECCIONA TUS ASIENTOS</h2>
+            <span id="contador-asientos" class="text-xs font-black bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200">
+              0 de 1 seleccionados
+            </span>
+          </div>
+
+          <!-- Leyenda -->
+          <div class="flex flex-wrap items-center gap-6 mb-8 text-[11px] font-semibold text-gray-600">
+            <div class="flex items-center gap-2"><span class="w-4 h-4 bg-white border border-gray-300 rounded"></span> Disponible</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 bg-emerald-400 border border-emerald-600 rounded"></span> Seleccionado</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 bg-[#1E2530] rounded"></span> Ocupado</div>
+            <div class="flex items-center gap-2"><span class="w-4 h-4 bg-emerald-100 border border-emerald-300 rounded"></span> Premium (+ $2,500)</div>
+          </div>
+
+          <!-- Cabina del Avión -->
+          <div class="max-w-md mx-auto bg-[#F8FAFC] p-6 rounded-3xl border border-gray-200">
+            <div class="bg-white text-center py-2 text-[10px] font-black uppercase tracking-widest text-gray-400 rounded-xl mb-6 shadow-sm border border-gray-100">
+              FRENTE DEL AVIÓN
+            </div>
+
+            <div class="space-y-3">
+              {% for fila in range(1, 10) %}
+                <div class="flex items-center justify-between">
+                  <!-- Lado Izquierdo (A, B, C) -->
+                  <div class="flex gap-2">
+                    {% for col in ['A', 'B', 'C'] %}
+                      {% set seat = fila|string + col %}
+                      {% if seat in asientos_ocupados %}
+                        <button type="button" disabled class="w-10 h-10 rounded-xl bg-[#1E2530] text-gray-400 text-xs font-bold cursor-not-allowed opacity-80">{{ seat }}</button>
+                      {% elif fila <= 5 %}
+                        <button type="button" onclick="toggleSeat('{{ seat }}', true)" id="btn-{{ seat }}" class="asiento-btn w-10 h-10 rounded-xl bg-emerald-50 text-slate-900 border border-emerald-300 text-xs font-extrabold hover:bg-emerald-100 transition">{{ seat }}</button>
+                      {% else %}
+                        <button type="button" onclick="toggleSeat('{{ seat }}', false)" id="btn-{{ seat }}" class="asiento-btn w-10 h-10 rounded-xl bg-white border border-gray-300 text-slate-800 text-xs font-extrabold hover:bg-gray-100 transition">{{ seat }}</button>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+
+                  <span class="text-xs font-bold text-gray-400 w-6 text-center">{{ fila }}</span>
+
+                  <!-- Lado Derecho (D, E, F) -->
+                  <div class="flex gap-2">
+                    {% for col in ['D', 'E', 'F'] %}
+                      {% set seat = fila|string + col %}
+                      {% if seat in asientos_ocupados %}
+                        <button type="button" disabled class="w-10 h-10 rounded-xl bg-[#1E2530] text-gray-400 text-xs font-bold cursor-not-allowed opacity-80">{{ seat }}</button>
+                      {% elif fila <= 5 %}
+                        <button type="button" onclick="toggleSeat('{{ seat }}', true)" id="btn-{{ seat }}" class="asiento-btn w-10 h-10 rounded-xl bg-emerald-50 text-slate-900 border border-emerald-300 text-xs font-extrabold hover:bg-emerald-100 transition">{{ seat }}</button>
+                      {% else %}
+                        <button type="button" onclick="toggleSeat('{{ seat }}', false)" id="btn-{{ seat }}" class="asiento-btn w-10 h-10 rounded-xl bg-white border border-gray-300 text-slate-800 text-xs font-extrabold hover:bg-gray-100 transition">{{ seat }}</button>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen Lateral Derecho -->
+      <div>
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm sticky top-8">
+          <h3 class="text-sm font-bold text-slate-900 mb-4">Resumen de Viaje</h3>
+          <div class="space-y-2 text-xs text-gray-500 mb-6">
+            <p>✈ Origen: <span class="font-bold text-slate-800">{{ vuelo.codigo_origen }}</span></p>
+            <p>🛬 Destino: <span class="font-bold text-slate-800">{{ vuelo.codigo_destino }}</span></p>
+            <p>📅 Fecha: <span class="font-bold text-slate-800">{{ vuelo.fecha }}</span></p>
+            <p>👥 Pasajeros: <span id="resumen-cant-pax" class="font-bold text-slate-800">1</span></p>
+            <p>💺 Asientos seleccionados: <span id="resumen-asientos" class="font-black text-emerald-800">Ninguno</span></p>
+          </div>
+
+          <div class="border-t border-gray-100 pt-4 mb-6">
+            <div class="flex justify-between text-xs text-gray-500 mb-1">
+              <span>Vuelo base (<span id="label-num-pax">1</span>x):</span>
+              <span id="label-subtotal-base" class="font-bold text-slate-800">${{ "{:,.1f}".format(vuelo.precio) }} MXN</span>
+            </div>
+            <div id="fila-premium-resumen" class="flex justify-between text-xs text-emerald-700 mb-1" style="display: none;">
+              <span>Recargo Premium:</span>
+              <span id="label-premium-total" class="font-bold">+$0.0 MXN</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-baseline mb-6">
+            <span class="text-xs font-bold text-slate-900">Total</span>
+            <span id="precio-total-label" class="text-2xl font-black text-emerald-700">
+              ${{ "{:,.1f}".format(vuelo.precio) }} MXN
+            </span>
+          </div>
+
+          <form id="form-continuar" method="POST" action="/reservar/{{ vuelo._id }}/pasajeros">
+            <input type="hidden" name="asiento_seleccionado" id="form-asientos-input" value="">
+            <input type="hidden" name="cantidad_pasajeros" id="form-pasajeros-input" value="1">
+            <button type="submit" id="btn-continuar" disabled class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-extrabold rounded-2xl transition duration-150 uppercase text-xs tracking-wider shadow-lg shadow-emerald-600/30 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none">
+              CONTINUAR AL PASO 2
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const precioBaseIndividual = {{ vuelo.precio }};
+    let capacidadMaxima = 1;
+    let asientosSeleccionados = [];
+
+    function actualizarCupoPasajeros() {
+      const select = document.getElementById('select-pasajeros');
+      capacidadMaxima = parseInt(select.value);
+
+      asientosSeleccionados.forEach(seat => {
+        const btn = document.getElementById('btn-' + seat);
+        if (btn) btn.classList.remove('seat-selected');
+      });
+      asientosSeleccionados = [];
+
+      actualizarInterfaz();
+    }
+
+    function toggleSeat(seat, isPremium) {
+      const index = asientosSeleccionados.indexOf(seat);
+      const btn = document.getElementById('btn-' + seat);
+
+      if (index > -1) {
+        asientosSeleccionados.splice(index, 1);
+        btn.classList.remove('seat-selected');
+      } else {
+        if (asientosSeleccionados.length >= capacidadMaxima) {
+          alert(`Ya has seleccionado los ${capacidadMaxima} asientos permitidos para tus pasajeros.`);
+          return;
+        }
+        asientosSeleccionados.push(seat);
+        btn.classList.add('seat-selected');
+      }
+
+      actualizarInterfaz();
+    }
+
+    function actualizarInterfaz() {
+      document.getElementById('contador-asientos').innerText = `${asientosSeleccionados.length} de ${capacidadMaxima} seleccionados`;
+      document.getElementById('resumen-cant-pax').innerText = capacidadMaxima;
+      document.getElementById('label-num-pax').innerText = capacidadMaxima;
+      document.getElementById('resumen-asientos').innerText = asientosSeleccionados.length > 0 ? asientosSeleccionados.join(', ') : 'Ninguno';
+
+      let recargoPremiumTotal = 0;
+      asientosSeleccionados.forEach(seat => {
+        const fila = parseInt(seat.replace(/\D/g, ''));
+        if (fila <= 5) recargoPremiumTotal += 2500;
+      });
+
+      const filaPremiumResumen = document.getElementById('fila-premium-resumen');
+      if (recargoPremiumTotal > 0) {
+        filaPremiumResumen.style.display = 'flex';
+        document.getElementById('label-premium-total').innerText = `+$${recargoPremiumTotal.toLocaleString('es-MX', {minimumFractionDigits: 1})} MXN`;
+      } else {
+        filaPremiumResumen.style.display = 'none';
+      }
+
+      const subtotalBase = precioBaseIndividual * capacidadMaxima;
+      document.getElementById('label-subtotal-base').innerText = `$${subtotalBase.toLocaleString('es-MX', {minimumFractionDigits: 1})} MXN`;
+
+      const totalFinal = subtotalBase + recargoPremiumTotal;
+      document.getElementById('precio-total-label').innerText = `$${totalFinal.toLocaleString('es-MX', {minimumFractionDigits: 1})} MXN`;
+
+      document.getElementById('form-asientos-input').value = asientosSeleccionados.join(',');
+      document.getElementById('form-pasajeros-input').value = capacidadMaxima;
+
+      const btnContinuar = document.getElementById('btn-continuar');
+      if (asientosSeleccionados.length === capacidadMaxima) {
+        btnContinuar.removeAttribute('disabled');
+      } else {
+        btnContinuar.setAttribute('disabled', 'true');
+      }
+    }
+
+    // Inicialización limpia: arranca en 0 asientos elegidos
+    document.addEventListener("DOMContentLoaded", () => {
+      actualizarInterfaz();
+    });
+  </script>
+</body>
+</html>

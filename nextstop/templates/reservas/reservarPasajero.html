@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Datos del Pasajero - NextStop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8FAFC] flex min-h-screen font-sans">
+
+  <aside class="w-64 bg-[#1E2530] text-gray-300 flex flex-col justify-between p-6 shrink-0">
+    <div>
+      <div class="flex items-center gap-3 mb-10">
+        <div class="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center text-white text-base shadow">
+          <i class="fa-solid fa-paper-plane"></i>
+        </div>
+        <div>
+          <h2 class="text-white font-extrabold text-lg leading-tight tracking-tight">Next<span class="text-orange-500">Stop</span></h2>
+          <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">PORTAL DEL VIAJERO</p>
+        </div>
+      </div>
+
+<nav class="space-y-2 text-sm font-semibold">
+  <a href="/dashboard/cliente" class="flex items-center gap-3 px-4 py-3 bg-[#2D3748] text-white rounded-xl shadow-sm transition">
+    <i class="fa-solid fa-magnifying-glass text-orange-400"></i> Buscar Vuelos
+  </a>
+  <a href="/mis-boletos" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+    <i class="fa-solid fa-ticket text-gray-400"></i> Mis Boletos
+  </a>
+  <a href="/favoritos" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+    <i class="fa-regular fa-heart text-gray-400"></i> Favoritos
+  </a>
+  <a href="/perfil" class="flex items-center gap-3 px-4 py-3 hover:bg-[#2D3748]/50 hover:text-white rounded-xl transition">
+    <i class="fa-regular fa-user text-gray-400"></i> Mi Perfil
+  </a>
+</nav>
+    </div>
+
+    <a href="/logout" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-400 rounded-xl text-sm font-semibold">
+      <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+    </a>
+  </aside>
+
+  <main class="flex-1 p-10 overflow-y-auto">
+    <!-- Pasos superiores -->
+    <div class="flex items-center justify-center gap-10 mb-8 text-xs font-bold uppercase tracking-wider">
+      <div class="flex items-center gap-2 text-gray-400">
+        <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]"><i class="fa-solid fa-check"></i></span> SELECCIONAR ASIENTO
+      </div>
+      <div class="flex items-center gap-2 text-emerald-700">
+        <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">2</span> DATOS DEL PASAJERO
+      </div>
+      <div class="flex items-center gap-2 text-gray-400">
+        <span class="w-6 h-6 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-[10px]">3</span> PAGO
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-6">
+        <form id="form-datos-pasajeros" method="POST" action="/reservar/{{ vuelo._id }}/confirmar" class="space-y-6">
+          <input type="hidden" name="asientos" value="{{ asientos_str }}">
+          <input type="hidden" name="pasajeros" value="{{ pasajeros }}">
+          <input type="hidden" name="total" value="{{ total }}">
+
+          {% for i in range(1, pasajeros + 1) %}
+            {% set asiento_actual = asientos[i-1] if i-1 < asientos|length else 'Asignado' %}
+            <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                <h2 class="text-sm font-black uppercase tracking-wider text-slate-800">
+                  VIAJERO {{ i }}
+                </h2>
+                <span class="bg-emerald-50 text-emerald-800 font-extrabold text-xs px-3 py-1 rounded-full border border-emerald-200">
+                  Asiento: {{ asiento_actual }}
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-800 mb-1">Nombre(s) <span class="text-red-500">*</span></label>
+                  <input type="text" name="nombre_{{ i }}" id="nombre_{{ i }}" value="{{ usuario.nombre if i == 1 else '' }}" required placeholder="Ej. Juan" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-800 mb-1">Apellidos <span class="text-red-500">*</span></label>
+                  <input type="text" name="apellidos_{{ i }}" id="apellidos_{{ i }}" value="{{ 'Jimenez Susunaga' if i == 1 else '' }}" required placeholder="Ej. Pérez López" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-800 mb-1">Correo Electrónico <span class="text-red-500">*</span></label>
+                <input type="email" name="correo_{{ i }}" id="correo_{{ i }}" value="{{ usuario.correo if i == 1 else '' }}" required placeholder="correo@ejemplo.com" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-800 mb-1">Teléfono de Contacto (Formato: XXX-XXX-XXXX) <span class="text-red-500">*</span></label>
+                <div class="flex gap-2">
+                  <!-- Selector de banderas y prefijos -->
+                  <select name="prefijo_{{ i }}" id="prefijo_{{ i }}" class="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 text-xs font-bold text-gray-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    <option value="+52">🇲🇽 +52 (México)</option>
+                    <option value="+1">🇺🇸 +1 (EE.UU./Canadá)</option>
+                    <option value="+34">🇪🇸 +34 (España)</option>
+                    <option value="+57">🇨🇴 +57 (Colombia)</option>
+                    <option value="+54">🇦🇷 +54 (Argentina)</option>
+                    <option value="+56">🇨🇱 +56 (Chile)</option>
+                    <option value="+51">🇵🇪 +51 (Perú)</option>
+                    <option value="+507">🇵🇦 +507 (Panamá)</option>
+                  </select>
+                  <input type="tel" name="telefono_{{ i }}" id="telefono_{{ i }}" value="{{ usuario.telefono if (i == 1 and usuario.telefono) else '123-454-3212' }}" pattern="^[0-9]{3}-[0-9]{3}-[0-9]{4}$" title="El teléfono debe tener formato XXX-XXX-XXXX" required placeholder="XXX-XXX-XXXX" class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-800 mb-1">Fecha de Nacimiento <span class="text-red-500">*</span></label>
+                  <input type="date" name="fecha_nacimiento_{{ i }}" id="nacimiento_{{ i }}" onchange="verificarEdad({{ i }})" value="2000-03-04" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-800 mb-1">Nacionalidad <span class="text-red-500">*</span></label>
+                  <input type="text" name="nacionalidad_{{ i }}" id="nacionalidad_{{ i }}" value="Mexicana" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-800 mb-1">Tipo de Identificación Oficial <span class="text-red-500">*</span></label>
+                <select name="tipo_id_{{ i }}" id="tipo_id_{{ i }}" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none font-medium">
+                  <!-- Opciones dinámicas según edad -->
+                  <option value="Credencial para votar INE/IFE">Credencial para votar INE/IFE</option>
+                  <option value="Pasaporte">Pasaporte</option>
+                  <option value="Cédula Profesional">Cédula Profesional</option>
+                </select>
+                <p id="aviso_edad_{{ i }}" class="text-[11px] text-amber-600 font-bold mt-1" style="display: none;">
+                  ⚠ Pasajero menor de 18 años detectado. Identificaciones para adultos deshabilitadas.
+                </p>
+              </div>
+            </div>
+          {% endfor %}
+
+          <div class="pt-4 flex gap-4">
+            <button type="button" onclick="abrirModalConfirmacion()" class="flex-1 py-4 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-extrabold rounded-2xl uppercase text-xs tracking-wider shadow-lg shadow-emerald-600/30 transition duration-150">
+              CONTINUAR AL PAGO
+            </button>
+            <a href="/reservar/{{ vuelo._id }}" class="px-6 py-4 bg-gray-100 hover:bg-gray-200 active:scale-95 text-gray-700 font-bold rounded-2xl uppercase text-xs flex items-center justify-center transition">
+              VOLVER
+            </a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Resumen Lateral -->
+      <div>
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm sticky top-8">
+          <h3 class="text-sm font-bold text-slate-900 mb-4">Resumen del Viaje</h3>
+          <div class="space-y-2 text-xs text-gray-500 mb-4 border-b border-gray-100 pb-4">
+            <p>✈ Ruta: <span class="font-bold text-slate-800">{{ vuelo.codigo_origen }} &rarr; {{ vuelo.codigo_destino }}</span></p>
+            <p>📅 Fecha: <span class="font-bold text-slate-800">{{ vuelo.fecha }}</span></p>
+            <p>👥 Pasajeros: <span class="font-bold text-slate-800">{{ pasajeros }}</span></p>
+            <p>💺 Asientos: <span class="font-black text-emerald-800">{{ asientos_str }}</span></p>
+            {% if cargo_premium > 0 %}
+              <p class="text-emerald-700 font-bold">★ Recargo Premium: +${{ "{:,.1f}".format(cargo_premium) }} MXN</p>
+            {% endif %}
+          </div>
+          <div class="flex justify-between items-baseline mb-6">
+            <span class="text-xs font-bold text-slate-900">Total</span>
+            <span class="text-2xl font-black text-emerald-700">${{ "{:,.1f}".format(total) }} MXN</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL INTERACTIVO DE CONFIRMACIÓN -->
+  <div id="modal-confirmacion" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl border border-gray-100 animate-in fade-in zoom-in duration-200">
+      <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl mb-4">
+        <i class="fa-solid fa-clipboard-check"></i>
+      </div>
+      <h3 class="text-xl font-black text-slate-800 mb-1">¿Tus datos son correctos?</h3>
+      <p class="text-xs text-gray-500 mb-4">Por favor revisa la información antes de procesar el pago de tu reservación:</p>
+
+      <div id="modal-detalles-pasajeros" class="bg-gray-50 rounded-2xl p-4 text-xs space-y-3 mb-6 max-h-60 overflow-y-auto border border-gray-200">
+      </div>
+
+      <div class="flex gap-3">
+        <button type="button" onclick="cerrarModal()" class="flex-1 py-3 bg-gray-100 hover:bg-gray-200 active:scale-95 text-gray-700 font-bold rounded-xl text-xs uppercase transition">
+          Modificar Datos
+        </button>
+        <button type="button" onclick="ejecutarCompraFinal()" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider shadow-lg shadow-emerald-600/30 transition">
+          Sí, confirmar compra
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const totalPasajeros = {{ pasajeros }};
+
+    function verificarEdad(indice) {
+      const fechaInput = document.getElementById(`nacimiento_${indice}`);
+      const selectId = document.getElementById(`tipo_id_${indice}`);
+      const aviso = document.getElementById(`aviso_edad_${indice}`);
+
+      if (!fechaInput.value) return;
+
+      const fechaNac = new Date(fechaInput.value);
+      const hoy = new Date();
+      let edad = hoy.getFullYear() - fechaNac.getFullYear();
+      const mes = hoy.getMonth() - fechaNac.getMonth();
+      if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNac.getDate())) {
+        edad--;
+      }
+
+      if (edad < 18) {
+        aviso.style.display = 'block';
+        selectId.innerHTML = `
+          <option value="CURP">CURP</option>
+          <option value="Acta de Nacimiento">Acta de Nacimiento</option>
+          <option value="Pasaporte de Menor de Edad">Pasaporte de Menor de Edad</option>
+          <option value="Credencial Escolar">Credencial Escolar</option>
+        `;
+      } else {
+        aviso.style.display = 'none';
+        selectId.innerHTML = `
+          <option value="Credencial para votar INE/IFE" selected>Credencial para votar INE/IFE</option>
+          <option value="Pasaporte">Pasaporte</option>
+          <option value="Cédula Profesional">Cédula Profesional</option>
+        `;
+      }
+    }
+
+    function abrirModalConfirmacion() {
+      const form = document.getElementById('form-datos-pasajeros');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const contenedor = document.getElementById('modal-detalles-pasajeros');
+      contenedor.innerHTML = '';
+
+      for (let i = 1; i <= totalPasajeros; i++) {
+        const nom = document.getElementById(`nombre_${i}`).value;
+        const ape = document.getElementById(`apellidos_${i}`).value;
+        const mail = document.getElementById(`correo_${i}`).value;
+        const pref = document.getElementById(`prefijo_${i}`).value;
+        const tel = document.getElementById(`telefono_${i}`).value;
+        const doc = document.getElementById(`tipo_id_${i}`).value;
+
+        contenedor.innerHTML += `
+          <div class="border-b border-gray-200 pb-2 mb-2 last:border-b-0">
+            <p class="font-extrabold text-slate-800">👤 Pasajero ${i}: ${nom} ${ape}</p>
+            <p class="text-gray-500">📧 ${mail} &bull; 📞 ${pref} ${tel}</p>
+            <p class="text-gray-500">📄 Identificación: <span class="font-bold text-slate-700">${doc}</span></p>
+          </div>
+        `;
+      }
+
+      document.getElementById('modal-confirmacion').classList.remove('hidden');
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal-confirmacion').classList.add('hidden');
+    }
+
+    function ejecutarCompraFinal() {
+      document.getElementById('form-datos-pasajeros').submit();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      for (let i = 1; i <= totalPasajeros; i++) {
+        verificarEdad(i);
+      }
+    });
+  </script>
+</body>
+</html>
