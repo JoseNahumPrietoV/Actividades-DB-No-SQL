@@ -20,12 +20,6 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key_itver")
 
-app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587)) # El int() es vital
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
 
 # Conexión MongoDB Atlas
 client = MongoClient(os.getenv("MONGO_URI"))
@@ -276,15 +270,26 @@ def login(tipo):
         correo = request.form.get("correo", "").strip().lower()
         password = request.form.get("password", "")
 
-        usuario = usuarios_col.find_one({"correo": correo, "rol": tipo})
+        # Buscamos al usuario solo por correo para permitir que el admin entre desde cualquier portal
+        usuario = usuarios_col.find_one({"correo": correo})
+
         if usuario and check_password_hash(usuario.get("password_hash", ""), password):
+            rol_real = usuario.get("rol", tipo)
+
+            # Verificación de seguridad: si es cliente intentando entrar a proveedor (o viceversa) sin ser admin
+            if rol_real != "admin" and rol_real != tipo:
+                flash("Portal incorrecto para tu tipo de cuenta.", "error")
+                return redirect(url_for("login", tipo=tipo))
+
             session["user_id"] = str(usuario["_id"])
             session["nombre"] = usuario.get("nombre")
             session["correo"] = usuario.get("correo")
             session["telefono"] = usuario.get("telefono", "")
-            session["rol"] = tipo
+            session["rol"] = rol_real
 
-            if tipo == "proveedor":
+            if rol_real == "admin":
+                return redirect(url_for("dashboardAdmin"))
+            elif rol_real == "proveedor":
                 return redirect(url_for("dashboardProveedor"))
             else:
                 return redirect(url_for("dashboardCliente"))
@@ -1167,6 +1172,28 @@ def proveedor_perfil():
         return redirect(url_for("proveedor_perfil"))
 
     return render_template("proveedor/perfilProveedor.html", usuario=usuario, nombre=usuario.get("nombre"))
+
+
+@app.route("/dashboard/admin")
+@login_requerido("admin")
+def dashboardAdmin():
+    # Traemos a todos los usuarios que no sean administradores
+    usuarios_registrados = list(usuarios_col.find({"rol": {"$ne": "admin"}}).sort("creado_en", -1))
+    return render_template("admin/dashboardAdmin.html", nombre=session.get("nombre"), usuarios=usuarios_registrados)
+
+
+@app.route("/admin/usuarios/eliminar/<usuario_id>", methods=["POST"])
+@login_requerido("admin")
+def admin_eliminar_usuario(usuario_id):
+    try:
+        # Al eliminar un proveedor, podríamos querer eliminar sus vuelos, o dejarlos huérfanos.
+        # Por ahora solo eliminamos la cuenta de acceso.
+        usuarios_col.delete_one({"_id": ObjectId(usuario_id)})
+        flash("Usuario eliminado permanentemente del sistema.", "success")
+    except Exception as e:
+        flash("Error al eliminar el usuario.", "error")
+
+    return redirect(url_for("dashboardAdmin"))
 
 if __name__ == "__main__":
     try:
