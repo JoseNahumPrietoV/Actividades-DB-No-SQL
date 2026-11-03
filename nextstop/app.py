@@ -1221,23 +1221,23 @@ def admin_eliminar_usuario(usuario_id):
 # --- RUTA SECRETA DE CONFIGURACIÓN EN RENDER ---
 @app.route("/crear-admin-secreto")
 def crear_admin_secreto():
-    # update_one con upsert=True obliga a Mongo a reescribir los datos correctamente
-    usuarios_col.update_one(
-        {"correo": "admin123@gmail.com"},
-        {"$set": {
-            "nombre": "Jose ignacio vallejo zuñiga",
-            "correo": "admin123@gmail.com",
-            "password_hash": generate_password_hash("Jivz2004"),
-            "rol": "admin"
-        }},
-        upsert=True
-    )
+    # 1. Borrar CUALQUIER cuenta vieja, corrupta o duplicada con este correo
+    usuarios_col.delete_many({"correo": "admin123@gmail.com"})
+
+    # 2. Crear una cuenta única y completamente limpia
+    usuarios_col.insert_one({
+        "nombre": "Jose ignacio vallejo zuñiga",
+        "correo": "admin123@gmail.com",
+        "password_hash": generate_password_hash("Jivz2004"),
+        "rol": "admin",
+        "creado_en": datetime.utcnow()
+    })
 
     return """
     <div style="font-family: Arial; text-align: center; margin-top: 50px;">
-        <h1 style="color: #2563eb;">🔄 CREDENCIALES REPARADAS</h1>
-        <h2>La cuenta de administrador ha sido forzada a actualizarse con la encriptación correcta.</h2>
-        <p>Ya puedes volver a la página de inicio e iniciar sesión como cliente con admin123@gmail.com y Jivz2004</p>
+        <h1 style="color: #2563eb;">🧹 LIMPIEZA Y CREACIÓN EXITOSA</h1>
+        <h2>Se borraron los registros corruptos y se creó un administrador limpio.</h2>
+        <p>Ya puedes iniciar sesión con <b>admin123@gmail.com</b> y la contraseña <b>Jivz2004</b> (asegúrate de poner la 'J' mayúscula).</p>
     </div>
     """
 
