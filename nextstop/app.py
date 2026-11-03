@@ -1218,30 +1218,26 @@ def admin_eliminar_usuario(usuario_id):
     return redirect(url_for("dashboardAdmin"))
 
 
-# --- RUTA SECRETA DE CONFIGURACIÓN (Ejecutar solo una vez en Render) ---
+# --- RUTA SECRETA DE CONFIGURACIÓN EN RENDER ---
 @app.route("/crear-admin-secreto")
 def crear_admin_secreto():
-    existe = usuarios_col.find_one({"correo": "admin123@gmail.com"})
-    if not existe:
-        admin_doc = {
+    # update_one con upsert=True obliga a Mongo a reescribir los datos correctamente
+    usuarios_col.update_one(
+        {"correo": "admin123@gmail.com"},
+        {"$set": {
             "nombre": "Jose ignacio vallejo zuñiga",
             "correo": "admin123@gmail.com",
             "password_hash": generate_password_hash("Jivz2004"),
-            "rol": "admin",
-            "creado_en": datetime.utcnow()
-        }
-        usuarios_col.insert_one(admin_doc)
-        return """
-        <div style="font-family: Arial; text-align: center; margin-top: 50px;">
-            <h1 style="color: green;">✅ ÉXITO TOTAL</h1>
-            <h2>Administrador creado en la base de datos de producción (MongoDB Atlas).</h2>
-            <p>Ya puedes volver a la página de inicio e iniciar sesión como cliente con admin123@gmail.com</p>
-        </div>
-        """
+            "rol": "admin"
+        }},
+        upsert=True
+    )
+
     return """
     <div style="font-family: Arial; text-align: center; margin-top: 50px;">
-        <h1 style="color: orange;">⚠️ AVISO</h1>
-        <h2>El administrador ya existía en la base de datos. No se duplicó.</h2>
+        <h1 style="color: #2563eb;">🔄 CREDENCIALES REPARADAS</h1>
+        <h2>La cuenta de administrador ha sido forzada a actualizarse con la encriptación correcta.</h2>
+        <p>Ya puedes volver a la página de inicio e iniciar sesión como cliente con admin123@gmail.com y Jivz2004</p>
     </div>
     """
 
