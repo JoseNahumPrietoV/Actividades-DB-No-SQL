@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración Supremo - NextStop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-50 min-h-screen font-sans">
+    <!-- Navegación -->
+    <nav class="bg-slate-900 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl font-bold text-orange-500"><i class="fa-solid fa-plane-departure mr-2"></i>NextStop</span>
+                    <span class="px-2 py-1 bg-red-600 text-[10px] font-bold rounded uppercase tracking-widest shadow-sm">Administrador</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <span class="text-sm font-medium text-slate-300">Bienvenido, <span class="text-white">{{ nombre }}</span></span>
+                    <a href="{{ url_for('logout') }}" class="text-sm bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition border border-slate-700"><i class="fa-solid fa-right-from-bracket mr-2"></i>Salir</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- Sistema de Alertas -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="mb-6 p-4 rounded-xl text-sm font-semibold flex items-center shadow-sm {% if category == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200{% else %}bg-red-50 text-red-800 border border-red-200{% endif %}">
+                  <i class="fa-solid {% if category == 'success' %}fa-circle-check text-emerald-500{% else %}fa-circle-exclamation text-red-500{% endif %} mr-3 text-lg"></i>
+                  {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- Encabezado y Estadísticas -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">Centro de Control de Base de Datos</h1>
+            <p class="text-slate-500 mt-2 text-sm">Supervisa métricas globales y gestiona los accesos a la plataforma NextStop.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex items-center">
+                <div class="bg-blue-50 text-blue-600 p-4 rounded-xl mr-5">
+                    <i class="fa-solid fa-users text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Clientes Activos</p>
+                    <p class="text-3xl font-bold text-slate-800">{{ total_clientes }}</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex items-center">
+                <div class="bg-orange-50 text-orange-600 p-4 rounded-xl mr-5">
+                    <i class="fa-solid fa-building text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Agencias Registradas</p>
+                    <p class="text-3xl font-bold text-slate-800">{{ total_agencias }}</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex items-center">
+                <div class="bg-indigo-50 text-indigo-600 p-4 rounded-xl mr-5">
+                    <i class="fa-solid fa-plane text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Vuelos Globales</p>
+                    <p class="text-3xl font-bold text-slate-800">{{ total_vuelos }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Gestión de Usuarios -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <h2 class="text-lg font-bold text-slate-800">Directorio de Usuarios</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Perfil de Usuario</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Contacto</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Tipo de Cuenta</th>
+                            <th class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Fecha Registro</th>
+                            <th class="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Acciones Destructivas</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 bg-white">
+                        {% for u in usuarios %}
+                        <tr class="hover:bg-slate-50/80 transition duration-150">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-bold text-slate-800">{{ u.nombre }}</div>
+                                {% if u.rol == 'proveedor' and u.admin_responsable %}
+                                <div class="text-xs text-slate-500 mt-1">Resp: {{ u.admin_responsable }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-slate-600"><i class="fa-solid fa-envelope mr-2 text-slate-400"></i>{{ u.correo }}</div>
+                                <div class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-phone mr-2 text-slate-400"></i>{{ u.telefono or 'N/A' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if u.rol == 'proveedor' %}
+                                    <span class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-orange-100 text-orange-800 border border-orange-200">Proveedor / Agencia</span>
+                                {% else %}
+                                    <span class="px-3 py-1 inline-flex text-xs font-bold rounded-full bg-blue-100 text-blue-800 border border-blue-200">Cliente / Viajero</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                                {{ u.creado_en.strftime('%Y-%m-%d') if u.creado_en else 'Desconocida' }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                                <form action="{{ url_for('admin_eliminar_usuario', usuario_id=u._id) }}" method="POST" onsubmit="return confirm('ATENCIÓN: ¿Estás completamente seguro de borrar este usuario?\n\nSi es una Agencia, TODOS sus vuelos se borrarán permanentemente de la base de datos.');">
+                                    <button type="submit" class="inline-flex items-center text-red-600 hover:text-white font-semibold bg-red-50 hover:bg-red-600 px-3 py-2 rounded-lg border border-red-100 hover:border-red-600 transition-colors duration-200">
+                                        <i class="fa-solid fa-trash-can mr-2"></i> Borrar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-16 text-center">
+                                <div class="text-slate-400 mb-2"><i class="fa-solid fa-folder-open text-4xl"></i></div>
+                                <p class="text-slate-500 text-sm font-medium">No hay clientes ni agencias registradas en la base de datos.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

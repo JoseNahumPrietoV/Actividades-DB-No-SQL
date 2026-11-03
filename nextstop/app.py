@@ -20,7 +20,6 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev_secret_key_itver")
 
-
 # Conexión MongoDB Atlas
 client = MongoClient(os.getenv("MONGO_URI"))
 db = client["NextStop"]
@@ -1174,26 +1173,78 @@ def proveedor_perfil():
     return render_template("proveedor/perfilProveedor.html", usuario=usuario, nombre=usuario.get("nombre"))
 
 
+# --- MÓDULO ADMINISTRADOR SUPREMO ---
+
 @app.route("/dashboard/admin")
 @login_requerido("admin")
 def dashboardAdmin():
-    # Traemos a todos los usuarios que no sean administradores
     usuarios_registrados = list(usuarios_col.find({"rol": {"$ne": "admin"}}).sort("creado_en", -1))
-    return render_template("admin/dashboardAdmin.html", nombre=session.get("nombre"), usuarios=usuarios_registrados)
+
+    total_clientes = sum(1 for u in usuarios_registrados if u.get("rol") == "cliente")
+    total_agencias = sum(1 for u in usuarios_registrados if u.get("rol") == "proveedor")
+    total_vuelos = vuelos_col.count_documents({})
+
+    return render_template(
+        "admin/dashboardAdmin.html",
+        nombre=session.get("nombre"),
+        usuarios=usuarios_registrados,
+        total_clientes=total_clientes,
+        total_agencias=total_agencias,
+        total_vuelos=total_vuelos
+    )
 
 
 @app.route("/admin/usuarios/eliminar/<usuario_id>", methods=["POST"])
 @login_requerido("admin")
 def admin_eliminar_usuario(usuario_id):
     try:
-        # Al eliminar un proveedor, podríamos querer eliminar sus vuelos, o dejarlos huérfanos.
-        # Por ahora solo eliminamos la cuenta de acceso.
-        usuarios_col.delete_one({"_id": ObjectId(usuario_id)})
-        flash("Usuario eliminado permanentemente del sistema.", "success")
+        usuario_a_eliminar = usuarios_col.find_one({"_id": ObjectId(usuario_id)})
+
+        if usuario_a_eliminar:
+            # Si borramos una agencia, destruimos también todos los vuelos que creó para limpiar la BD
+            if usuario_a_eliminar.get("rol") == "proveedor":
+                vuelos_col.delete_many({"creado_por_proveedor": ObjectId(usuario_id)})
+
+            usuarios_col.delete_one({"_id": ObjectId(usuario_id)})
+            flash(
+                f"El usuario {usuario_a_eliminar.get('nombre')} y todos sus datos vinculados fueron eliminados de Mongo.",
+                "success")
+        else:
+            flash("Usuario no encontrado.", "error")
+
     except Exception as e:
-        flash("Error al eliminar el usuario.", "error")
+        flash("Error interno al eliminar el usuario.", "error")
 
     return redirect(url_for("dashboardAdmin"))
+
+
+# --- RUTA SECRETA DE CONFIGURACIÓN (Ejecutar solo una vez en Render) ---
+@app.route("/crear-admin-secreto")
+def crear_admin_secreto():
+    existe = usuarios_col.find_one({"correo": "admin123@gmail.com"})
+    if not existe:
+        admin_doc = {
+            "nombre": "Jose ignacio vallejo zuñiga",
+            "correo": "admin123@gmail.com",
+            "password_hash": generate_password_hash("Jivz2004"),
+            "rol": "admin",
+            "creado_en": datetime.utcnow()
+        }
+        usuarios_col.insert_one(admin_doc)
+        return """
+        <div style="font-family: Arial; text-align: center; margin-top: 50px;">
+            <h1 style="color: green;">✅ ÉXITO TOTAL</h1>
+            <h2>Administrador creado en la base de datos de producción (MongoDB Atlas).</h2>
+            <p>Ya puedes volver a la página de inicio e iniciar sesión como cliente con admin123@gmail.com</p>
+        </div>
+        """
+    return """
+    <div style="font-family: Arial; text-align: center; margin-top: 50px;">
+        <h1 style="color: orange;">⚠️ AVISO</h1>
+        <h2>El administrador ya existía en la base de datos. No se duplicó.</h2>
+    </div>
+    """
+
 
 if __name__ == "__main__":
     try:
