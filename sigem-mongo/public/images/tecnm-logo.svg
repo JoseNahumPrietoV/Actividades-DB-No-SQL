@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="TecNM Veracruz">
+  <rect width="240" height="240" rx="34" fill="#0b1d3a"/>
+  <path d="M56 74h34v92H56z" fill="#1b65d4"/>
+  <path d="M96 74h34v92H96z" fill="#0f9d58"/>
+  <path d="M136 74h34v92h-34z" fill="#f4a623"/>
+  <path d="M176 74h8v92h-8z" fill="#d93025"/>
+  <path d="M56 176h128v18H56z" fill="#ffffff" fill-opacity="0.9"/>
+  <circle cx="120" cy="120" r="28" fill="#ffffff" fill-opacity="0.14"/>
+</svg>

@@ -1,0 +1,7 @@
+
+Warning: require(C:\Users\Rafael572\Downloads\Proyectos\sigem-mongo/vendor/autoload.php): Failed to open stream: No such file or directory in C:\Users\Rafael572\Downloads\Proyectos\sigem-mongo\artisan on line 10
+
+Fatal error: Uncaught Error: Failed opening required 'C:\Users\Rafael572\Downloads\Proyectos\sigem-mongo/vendor/autoload.php' (include_path='.;C:\php\pear') in C:\Users\Rafael572\Downloads\Proyectos\sigem-mongo\artisan:10
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Rafael572\Downloads\Proyectos\sigem-mongo\artisan on line 10

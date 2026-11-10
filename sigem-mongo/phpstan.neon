@@ -1,0 +1,11 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+    level: 5
+    ignoreErrors:
+        - '#Relation .* is not found in .* model\.#'
+        - '#Access to an undefined property .*#'
+        - '#Using nullsafe property access .* is unnecessary\.#'
