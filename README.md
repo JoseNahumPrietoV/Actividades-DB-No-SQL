@@ -9,6 +9,7 @@ Actividades de la materia Base de Datos NoSQL.
   - `compose.yml`: contenedor de Neo4j 5 Community.
   - `practica-01-importacion-northwind.pdf`: práctica 1, importación de Northwind desde CSV.
   - `practica-02-roles-rbac.pdf`: práctica 2, roles integrados y RBAC en Neo4j.
+  - `practica-03-cluster-neo4j.pdf`: práctica 3, tres nodos Neo4j Enterprise con Podman.
 
 ## U3: Neo4j
 
