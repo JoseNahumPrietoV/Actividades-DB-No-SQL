@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Norte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f6f5ef; color: #1a3c34; font-family: sans-serif; }
+        .bg-brand-dark { background-color: #1a3c34; }
+        .text-brand-dark { color: #1a3c34; }
+        .bg-brand-orange { background-color: #e2a76f; }
+        .border-brand-dark { border-color: #1a3c34; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Vista 1: Login -->
+    <div id="view-login" class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div>
+            <span class="inline-block border border-gray-300 rounded-full px-4 py-1 text-sm mb-6 flex items-center gap-2 w-max">
+                <span class="w-2 h-2 bg-brand-orange rounded-full"></span> Tu dinero, siempre cerca
+            </span>
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-6 tracking-tight">Tus ahorros crecen<br>contigo.</h1>
+            <p class="text-gray-600 text-lg mb-12">Consulta tu saldo y administra tus movimientos desde un espacio simple, claro y seguro.</p>
+        </div>
+        <div class="bg-white p-8 md:p-10 rounded-3xl shadow-xl">
+            <p class="text-brand-orange text-xs font-bold tracking-widest mb-2">ACCESO</p>
+            <h2 class="text-3xl font-bold mb-2 text-brand-dark">Bienvenido de nuevo</h2>
+            <p class="text-gray-500 text-sm mb-8">Ingresa tus credenciales para entrar al sistema.</p>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-bold mb-2 text-gray-700">RFC</label>
+                <input id="input-rfc" type="text" placeholder="Ej. JAP800101HDF" class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-dark uppercase">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-2 text-gray-700">Contraseña</label>
+                <input id="input-password-login" type="password" placeholder="Ingresa tu contraseña" class="w-full p-4 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-dark">
+            </div>
+            
+            <button onclick="hacerLogin()" class="w-full bg-brand-dark text-white p-4 rounded-xl font-bold hover:opacity-90 transition">Ingresar al sistema</button>
+            <div class="mt-6 text-center">
+                <button onclick="navigate('view-create')" class="text-brand-orange text-sm font-bold hover:underline">¿No tienes cuenta? Crea una aquí</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista 7: Dashboard de Administrador / Empleado -->
+    <div id="view-admin" class="hidden w-full max-w-6xl">
+        <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
+            <div>
+                <p id="admin-sub" class="text-gray-500 text-sm">Panel de Control General</p>
+                <h2 id="admin-titulo" class="text-3xl font-bold">Vista de Administrador</h2>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="navigate('view-create')" class="bg-brand-dark text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-opacity-90 transition">+ Registrar Cliente</button>
+                <button onclick="cerrarSesion()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-gray-300 transition">Cerrar sesión</button>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+            <div class="overflow-x-auto p-8">
+                <table class="w-full text-left border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="text-xs tracking-widest text-gray-400 border-b border-gray-200">
+                            <th class="pb-4 font-bold">RFC</th>
+                            <th class="pb-4 font-bold">NOMBRE</th>
+                            <th class="pb-4 font-bold">SALDO</th>
+                            <th class="pb-4 font-bold">ROL</th>
+                            <th class="pb-4 font-bold text-center">ACCIONES RÁPIDAS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-usuarios-body" class="text-sm">
+                        <!-- Filas inyectadas por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista 2: Dashboard de Cliente Normal -->
+    <div id="view-dashboard" class="hidden w-full max-w-4xl">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <p class="text-gray-500 text-sm">Sesión activa</p>
+                <h2 id="lbl-nombre" class="text-3xl font-bold">Hola, Usuario</h2>
+            </div>
+            <button onclick="cerrarSesion()" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl text-sm font-bold hover:bg-gray-300 transition">Cerrar sesión</button>
+        </div>
+        
+        <div class="bg-brand-dark text-white p-8 md:p-10 rounded-3xl mb-6 flex flex-col md:flex-row justify-between md:items-end relative overflow-hidden shadow-lg">
+            <div class="relative z-10 mb-6 md:mb-0">
+                <p class="text-sm font-semibold opacity-80 mb-4 flex items-center gap-2">✓ Cuenta de ahorro</p>
+                <p class="text-xs tracking-widest opacity-80 mb-2">SALDO DISPONIBLE</p>
+                <p id="lbl-saldo-dash" class="text-5xl md:text-6xl font-bold mb-2">$0.00</p>
+            </div>
+            <div class="flex gap-4 relative z-10">
+                <button onclick="prepararOperacion(rfcUsuarioActual, 'D')" class="bg-white text-brand-dark px-6 py-4 rounded-xl font-bold hover:opacity-90 transition">Depositar</button>
+                <button onclick="prepararOperacion(rfcUsuarioActual, 'R')" class="bg-brand-orange text-brand-dark px-6 py-4 rounded-xl font-bold hover:opacity-90 transition">Retirar fondos</button>
+            </div>
+        </div>
+        <div class="mt-8 text-center">
+            <button onclick="confirmarEliminarCliente(rfcUsuarioActual)" class="text-red-500 text-sm font-bold hover:underline">Eliminar mi cuenta definitivamente</button>
+        </div>
+    </div>
+
+    <!-- Vista 6: Crear Cuenta -->
+    <div id="view-create" class="hidden w-full max-w-3xl bg-white p-8 md:p-10 rounded-3xl shadow-xl max-h-[95vh] overflow-y-auto">
+        <p class="text-brand-orange text-xs font-bold tracking-widest mb-2">SISTEMA BANCARIO</p>
+        <h2 class="text-3xl font-bold mb-2 text-brand-dark">Alta de cuenta</h2>
+        <p class="text-gray-500 text-sm mb-6">Completa la información para registrar en la base de datos.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+                <label class="block text-xs font-bold mb-1 text-brand-dark">RFC *</label>
+                <input id="new-rfc" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl uppercase focus:border-brand-dark">
+            </div>
+            <div>
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Tipo de Persona *</label>
+                <select id="new-tipo" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark bg-white">
+                    <option value="F">Física (F)</option>
+                    <option value="M">Moral (M)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Nombre(s) *</label>
+                <input id="new-nombre" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark">
+            </div>
+            <div>
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Apellidos *</label>
+                <input id="new-apellidos" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Contraseña *</label>
+                <input id="new-password" type="password" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark" placeholder="Crea una contraseña segura">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Calle y Número</label>
+                <input id="new-calle" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark">
+            </div>
+            <div>
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Colonia</label>
+                <input id="new-colonia" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark">
+            </div>
+            <div>
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Código Postal (CP)</label>
+                <input id="new-cp" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark">
+            </div>
+            <div>
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Municipio</label>
+                <input id="new-municipio" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark">
+            </div>
+            <div>
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Teléfono</label>
+                <input id="new-telefono" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-bold mb-1 text-brand-dark">Depósito inicial (MXN) *</label>
+                <input id="new-saldo" type="number" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-brand-dark" placeholder="Monto mayor a 0">
+            </div>
+        </div>
+        <button onclick="crearCuenta()" class="w-full bg-brand-orange text-brand-dark p-4 rounded-xl font-bold hover:opacity-90 transition">Confirmar y registrar</button>
+        <button onclick="volverAlPanel()" class="w-full mt-4 text-gray-500 text-sm font-bold hover:underline">Cancelar y volver</button>
+    </div>
+
+    <!-- Vista 3: Retiro -->
+    <div id="view-withdraw" class="hidden w-full max-w-lg bg-white p-8 md:p-10 rounded-3xl shadow-xl">
+        <p class="text-brand-orange text-xs font-bold tracking-widest mb-2" id="lbl-target-ret">RETIRO</p>
+        <h2 class="text-3xl font-bold mb-2 text-brand-dark">¿Cuánto retirar?</h2>
+        <div class="bg-[#f6f5ef] p-4 rounded-xl mb-6 flex justify-between items-center text-sm">
+            <span class="text-gray-500">Saldo disponible</span>
+            <span id="lbl-saldo-ret" class="font-bold text-brand-dark">$0.00</span>
+        </div>
+        <div class="mb-8">
+            <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold text-gray-500">$</span>
+                <input id="input-monto-ret" type="number" placeholder="0" class="w-full p-4 pl-8 border-2 border-brand-dark rounded-xl text-xl font-bold focus:outline-none">
+            </div>
+        </div>
+        <button onclick="hacerRetiro()" class="w-full bg-brand-dark text-white p-4 rounded-xl font-bold hover:opacity-90 transition">Confirmar retiro</button>
+        <button onclick="volverAlPanel()" class="w-full mt-4 text-gray-500 text-sm font-bold hover:underline">Cancelar</button>
+    </div>
+
+    <!-- Vista 5: Depósito -->
+    <div id="view-deposit" class="hidden w-full max-w-lg bg-white p-8 md:p-10 rounded-3xl shadow-xl">
+        <p class="text-brand-orange text-xs font-bold tracking-widest mb-2" id="lbl-target-dep">DEPÓSITO</p>
+        <h2 class="text-3xl font-bold mb-2 text-brand-dark">¿Cuánto depositar?</h2>
+        <div class="bg-[#f6f5ef] p-4 rounded-xl mb-6 flex justify-between items-center text-sm">
+            <span class="text-gray-500">Saldo disponible</span>
+            <span id="lbl-saldo-dep" class="font-bold text-brand-dark">$0.00</span>
+        </div>
+        <div class="mb-8">
+            <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xl font-bold text-gray-500">$</span>
+                <input id="input-monto-dep" type="number" placeholder="0" class="w-full p-4 pl-8 border-2 border-brand-dark rounded-xl text-xl font-bold focus:outline-none">
+            </div>
+        </div>
+        <button onclick="hacerDeposito()" class="w-full bg-brand-dark text-white p-4 rounded-xl font-bold hover:opacity-90 transition">Confirmar depósito</button>
+        <button onclick="volverAlPanel()" class="w-full mt-4 text-gray-500 text-sm font-bold hover:underline">Cancelar</button>
+    </div>
+
+    <!-- Vista 4: Éxito -->
+    <div id="view-success" class="hidden w-full max-w-md bg-brand-dark text-white rounded-3xl overflow-hidden shadow-2xl">
+        <div class="p-10 text-center border-b border-white/10">
+            <div class="w-16 h-16 bg-brand-orange rounded-full flex items-center justify-center mx-auto mb-6 text-brand-dark text-2xl font-bold">✓</div>
+            <h2 id="lbl-titulo-exito" class="text-4xl font-bold mb-4">Operación exitosa</h2>
+            <p id="lbl-monto-exito" class="opacity-80 font-light">Movimiento realizado con éxito.</p>
+        </div>
+        <div class="bg-white p-10 text-center">
+            <button onclick="volverAlPanel()" class="w-full bg-brand-dark text-white p-4 rounded-xl font-bold hover:opacity-90 transition">Volver al Panel</button>
+        </div>
+    </div>
+
+    <script>
+        let rfcUsuarioActual = "";
+        let rolUsuarioActual = "";
+        let rfcOperacion = "";
+
+        function navigate(targetId) {
+            const divs = document.querySelectorAll('body > div');
+            for (let i = 0; i < divs.length; i++) {
+                divs[i].classList.add('hidden');
+            }
+            document.getElementById(targetId).classList.remove('hidden');
+        }
+
+        async function hacerLogin() {
+            const rfc = document.getElementById('input-rfc').value.trim();
+            const password = document.getElementById('input-password-login').value;
+
+            if (!rfc || !password) { 
+                alert("Ingresa tu RFC y contraseña."); 
+                return; 
+            }
+
+            try {
+                const response = await fetch('https://banco-api-y8fn.onrender.com/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rfc: rfc, contra_cuenta: password })
+                });
+                const data = await response.json();
+                
+                if (data.exito) {
+                    rfcUsuarioActual = data.rfc;
+                    rolUsuarioActual = data.rol;
+                    
+                    if (rolUsuarioActual === "ADMIN" || rolUsuarioActual === "EMPLEADO") {
+                        cargarAdminDashboard();
+                    } else {
+                        cargarDashboard();
+                    }
+                } else {
+                    alert(data.mensaje);
+                }
+            } catch (error) { 
+                alert("Error de conexión con el servidor."); 
+            }
+        }
+
+        async function cargarAdminDashboard() {
+            try {
+                const tituloElement = document.getElementById('admin-titulo');
+                const subElement = document.getElementById('admin-sub');
+                
+                if (rolUsuarioActual === "EMPLEADO") {
+                    tituloElement.innerText = "Panel de Empleado";
+                    subElement.innerText = "Gestión de Altas y Bajas";
+                } else {
+                    tituloElement.innerText = "Vista de Administrador";
+                    subElement.innerText = "Panel de Control General";
+                }
+
+                const response = await fetch('https://banco-api-y8fn.onrender.com/api/usuarios');
+                const data = await response.json();
+                
+                if (data.exito) {
+                    const tbody = document.getElementById('tabla-usuarios-body');
+                    tbody.innerHTML = "";
+                    
+                    for (let i = 0; i < data.usuarios.length; i++) {
+                        const u = data.usuarios[i];
+                        let saldo = 0;
+                        if (u.cuentas && u.cuentas.length > 0 && u.cuentas[0].saldo != null) {
+                            saldo = parseFloat(u.cuentas[0].saldo);
+                        }
+                        
+                        const rfc = u._id;
+                        let rol = "CLIENTE";
+                        if (u.rol) {
+                            rol = u.rol;
+                        }
+
+                        let botonesHtml = "";
+                        if (rolUsuarioActual === "ADMIN") {
+                            botonesHtml = "<button onclick=\"prepararOperacion('" + rfc + "', 'D')\" class=\"text-green-600 bg-green-100 px-3 py-1 rounded-lg font-bold text-xs mr-2 hover:bg-green-200\">Depositar</button>" +
+                                          "<button onclick=\"prepararOperacion('" + rfc + "', 'R')\" class=\"text-orange-600 bg-orange-100 px-3 py-1 rounded-lg font-bold text-xs mr-2 hover:bg-orange-200\">Retirar</button>" +
+                                          "<button onclick=\"confirmarEliminarCliente('" + rfc + "')\" class=\"text-red-600 bg-red-100 px-3 py-1 rounded-lg font-bold text-xs hover:bg-red-200\">X</button>";
+                        } else if (rolUsuarioActual === "EMPLEADO") {
+                            botonesHtml = "<button onclick=\"confirmarEliminarCliente('" + rfc + "')\" class=\"text-red-600 bg-red-100 px-3 py-1 rounded-lg font-bold text-xs hover:bg-red-200\">Eliminar</button>";
+                        }
+                        
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-gray-50 transition border-b border-gray-100";
+                        
+                        let apellidos = u.apellidos ? u.apellidos : "";
+                        let saldoFormateado = saldo.toFixed(2);
+                        
+                        tr.innerHTML = "<td class=\"p-4 font-semibold\">" + rfc + "</td>" +
+                                       "<td class=\"p-4\">" + u.nombre + " " + apellidos + "</td>" +
+                                       "<td class=\"p-4 font-bold text-brand-dark\">$" + saldoFormateado + "</td>" +
+                                       "<td class=\"p-4\"><span class=\"px-2 py-1 bg-gray-200 text-xs rounded-full font-bold text-gray-700\">" + rol + "</span></td>" +
+                                       "<td class=\"p-4 text-center\">" + botonesHtml + "</td>";
+                        
+                        tbody.appendChild(tr);
+                    }
+                    navigate('view-admin');
+                }
+            } catch (error) { 
+                console.error("Error:", error); 
+            }
+        }
+
+        async function cargarDashboard() {
+            try {
+                const response = await fetch("https://banco-api-y8fn.onrender.com/api/usuario/" + rfcUsuarioActual);
+                const data = await response.json();
+                if (data.exito) {
+                    let saldoFormateado = parseFloat(data.saldo).toFixed(2);
+                    document.getElementById('lbl-nombre').innerText = "Hola, " + data.nombre;
+                    document.getElementById('lbl-saldo-dash').innerText = "$" + saldoFormateado;
+                    navigate('view-dashboard');
+                } else { 
+                    alert(data.mensaje); 
+                }
+            } catch (error) { 
+                console.error("Error:", error); 
+            }
+        }
+
+        async function prepararOperacion(rfcTarget, tipo) {
+            rfcOperacion = rfcTarget;
+            try {
+                const response = await fetch("https://banco-api-y8fn.onrender.com/api/usuario/" + rfcOperacion);
+                const data = await response.json();
+                if (data.exito) {
+                    const saldo = parseFloat(data.saldo).toFixed(2);
+                    if (tipo === 'D') {
+                        document.getElementById('lbl-target-dep').innerText = "DEPÓSITO PARA: " + rfcOperacion;
+                        document.getElementById('lbl-saldo-dep').innerText = "$" + saldo;
+                        document.getElementById('input-monto-dep').value = "";
+                        navigate('view-deposit');
+                    } else {
+                        document.getElementById('lbl-target-ret').innerText = "RETIRO PARA: " + rfcOperacion;
+                        document.getElementById('lbl-saldo-ret').innerText = "$" + saldo;
+                        document.getElementById('input-monto-ret').value = "";
+                        navigate('view-withdraw');
+                    }
+                }
+            } catch (error) { 
+                alert("Error obteniendo saldo actual."); 
+            }
+        }
+
+        async function hacerRetiro() {
+            const input = document.getElementById('input-monto-ret').value;
+            const monto = parseFloat(input);
+            if (isNaN(monto) || monto <= 0) { 
+                alert("Monto inválido."); 
+                return; 
+            }
+            try {
+                const response = await fetch('https://banco-api-y8fn.onrender.com/api/retirar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rfc: rfcOperacion, monto: monto })
+                });
+                const data = await response.json();
+                if (data.exito) {
+                    document.getElementById('lbl-titulo-exito').innerText = "Retiro exitoso";
+                    document.getElementById('lbl-monto-exito').innerText = "Retiraste $" + monto.toFixed(2);
+                    navigate('view-success');
+                } else { 
+                    alert(data.mensaje); 
+                }
+            } catch (error) { 
+                alert("Error de red."); 
+            }
+        }
+
+        async function hacerDeposito() {
+            const input = document.getElementById('input-monto-dep').value;
+            const monto = parseFloat(input);
+            if (isNaN(monto) || monto <= 0) { 
+                alert("Monto inválido."); 
+                return; 
+            }
+            try {
+                const response = await fetch('https://banco-api-y8fn.onrender.com/api/depositar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rfc: rfcOperacion, monto: monto })
+                });
+                const data = await response.json();
+                if (data.exito) {
+                    document.getElementById('lbl-titulo-exito').innerText = "Depósito exitoso";
+                    document.getElementById('lbl-monto-exito').innerText = "Depositaste $" + monto.toFixed(2);
+                    navigate('view-success');
+                } else { 
+                    alert(data.mensaje); 
+                }
+            } catch (error) { 
+                alert("Error de red."); 
+            }
+        }
+
+        async function confirmarEliminarCliente(rfcTarget) {
+            if (!confirm("¿Estás seguro de que deseas eliminar la cuenta de " + rfcTarget + "? Esta acción es irreversible.")) {
+                return;
+            }
+            try {
+                const response = await fetch('https://banco-api-y8fn.onrender.com/api/eliminar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ rfc: rfcTarget })
+                });
+                const data = await response.json();
+                if (data.exito) {
+                    alert("Cuenta eliminada correctamente.");
+                    if (rfcTarget === rfcUsuarioActual) {
+                        cerrarSesion();
+                    } else {
+                        cargarAdminDashboard();
+                    }
+                } else { 
+                    alert(data.mensaje); 
+                }
+            } catch (error) { 
+                alert("Error al eliminar la cuenta."); 
+            }
+        }
+
+        async function crearCuenta() {
+            const rfc = document.getElementById('new-rfc').value.trim();
+            const tipo = document.getElementById('new-tipo').value;
+            const nombre = document.getElementById('new-nombre').value.trim();
+            const apellidos = document.getElementById('new-apellidos').value.trim();
+            const calle_num = document.getElementById('new-calle').value.trim();
+            const colonia = document.getElementById('new-colonia').value.trim();
+            const cp = document.getElementById('new-cp').value.trim();
+            const municipio = document.getElementById('new-municipio').value.trim();
+            const telefono = document.getElementById('new-telefono').value.trim();
+            const saldo = parseFloat(document.getElementById('new-saldo').value);
+            const password = document.getElementById('new-password').value;
+
+            if (!rfc || !nombre || !apellidos || isNaN(saldo) || saldo < 0 || !password) {
+                alert("Completa todos los campos obligatorios, incluyendo la contraseña y el saldo inicial."); 
+                return;
+            }
+            
+            const payload = {
+                rfc: rfc,
+                tipo: tipo,
+                nombre: nombre,
+                apellidos: apellidos,
+                calle_num: calle_num,
+                colonia: colonia,
+                cp: cp,
+                municipio: municipio,
+                telefono: telefono,
+                saldo: saldo,
+                contra_cuenta: password
+            };
+
+            try {
+                const response = await fetch('https://banco-api-y8fn.onrender.com/api/crear', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if (data.exito) {
+                    alert("Cuenta registrada exitosamente.");
+                    volverAlPanel();
+                } else { 
+                    alert(data.mensaje); 
+                }
+            } catch (error) { 
+                alert("Error al conectar con el servidor."); 
+            }
+        }
+
+        function volverAlPanel() {
+            if (!rfcUsuarioActual) {
+                navigate('view-login');
+            } else if (rolUsuarioActual === "ADMIN" || rolUsuarioActual === "EMPLEADO") {
+                cargarAdminDashboard();
+            } else {
+                cargarDashboard();
+            }
+        }
+
+        function cerrarSesion() {
+            rfcUsuarioActual = "";
+            rolUsuarioActual = "";
+            rfcOperacion = "";
+            document.getElementById('input-rfc').value = "";
+            document.getElementById('input-password-login').value = "";
+            navigate('view-login');
+        }
+    </script>
+</body>
+</html>
